@@ -1,0 +1,24 @@
+schema_version: 1
+slug: safe-cosine-similarity
+version: 1
+title: Cosine similarity, without surprises
+difficulty: Foundation
+track: embeddings-retrieval
+tags:
+- embeddings
+- numerical stability
+- validation
+function_name: cosine_similarity
+summary: Compare embedding vectors without letting zero norms or floating-point overflow
+  corrupt retrieval.
+learning_objectives:
+- Normalize safely across extreme magnitudes
+- Define deterministic validation and zero-vector behavior
+constraints:
+- Inputs are Python lists of JSON numbers representable as finite Python floats, excluding booleans.
+- "1\u20134096 dimensions; equal lengths. Invalid dimensions or non-finite values\
+  \ raise ValueError."
+- 'Return a finite float in [-1, 1]. Absolute tolerance: 1e-9.'
+- A zero vector compared with any valid vector returns 0.0.
+production_relevance: Embedding pipelines encounter empty content, malformed vectors,
+  and numerical extremes. Explicit contracts prevent silent ranking corruption.

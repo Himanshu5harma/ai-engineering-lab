@@ -1,0 +1,38 @@
+[project]
+name = "ai-engineering-lab"
+version = "0.1.0"
+description = "Local AI engineering practice with isolated Python verification"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi>=0.115,<1", "uvicorn>=0.34,<1", "pydantic-settings>=2.8,<3",
+  "sqlalchemy>=2.0.38,<2.1", "psycopg[binary]>=3.2,<4", "alembic>=1.15,<2",
+  "pyyaml>=6.0.2,<7", "docker>=7.1,<8",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.3,<9", "httpx>=0.28,<1", "ruff>=0.11,<1", "mypy>=1.15,<2", "types-PyYAML>=6", "types-docker>=7"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["services/api/ael_api", "services/worker/ael_worker"]
+
+[tool.pytest.ini_options]
+testpaths = ["services/api/tests", "services/worker/tests"]
+markers = ["docker: requires locally built sandbox image and Docker", "postgres: requires PostgreSQL"]
+
+[tool.ruff]
+exclude = [".cache", ".venv", "node_modules"]
+target-version = "py312"
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["services/api/ael_api", "services/worker/ael_worker"]
+

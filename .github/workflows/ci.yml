@@ -1,0 +1,48 @@
+name: Quality and isolated execution
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:17.6-alpine
+        env:
+          POSTGRES_USER: ael
+          POSTGRES_PASSWORD: ael_local
+          POSTGRES_DB: ael
+        ports: ['5432:5432']
+        options: >-
+          --health-cmd 'pg_isready -U ael -d ael'
+          --health-interval 2s --health-timeout 3s --health-retries 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          version: '0.12.5'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: make setup migrate sandbox
+      - run: make test check
+      - run: make integration
+      - run: cd apps/web && npx playwright install --with-deps chromium
+      - name: Start local services
+        run: |
+          .venv/bin/uvicorn ael_api.main:create_app --factory --host 127.0.0.1 --port 8000 > /tmp/ael-api.log 2>&1 &
+          .venv/bin/python -m ael_worker > /tmp/ael-worker.log 2>&1 &
+          npm --prefix apps/web run dev > /tmp/ael-web.log 2>&1 &
+          .venv/bin/python scripts/wait_ready.py
+      - run: make e2e
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: browser-and-service-diagnostics
+          path: |
+            apps/web/test-results
+            apps/web/playwright-report
+            /tmp/ael-*.log

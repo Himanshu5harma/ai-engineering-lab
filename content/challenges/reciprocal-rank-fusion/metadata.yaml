@@ -1,0 +1,25 @@
+schema_version: 1
+slug: reciprocal-rank-fusion
+version: 1
+title: Fuse retrieval rankings
+difficulty: Intermediate
+track: embeddings-retrieval
+tags:
+- hybrid search
+- ranking
+- determinism
+function_name: reciprocal_rank_fusion
+summary: Merge lexical and semantic rankings into one stable, deduplicated retrieval
+  order.
+learning_objectives:
+- Combine incomparable retrieval scores using ranks
+- Make ties and duplicates deterministic
+constraints:
+- Each ranking contains at most 1000 nonempty string document IDs.
+- k is an integer between 1 and 1000; booleans are invalid.
+- Ranks are one-based; duplicates contribute only at their first original position
+  within each list.
+- Sort descending by fused score, then ascending by document ID for exact ties.
+- 'Return a list of {"id": str, "score": float}; absolute score tolerance: 1e-9.'
+production_relevance: Hybrid retrieval combines BM25 and vector search without pretending
+  their raw scores share a scale. Stable ties make evaluation reproducible.

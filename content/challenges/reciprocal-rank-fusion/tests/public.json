@@ -1,0 +1,91 @@
+[
+  {
+    "name": "Overlapping rankings",
+    "kwargs": {
+      "lexical": [
+        "a",
+        "b"
+      ],
+      "semantic": [
+        "b",
+        "c"
+      ],
+      "k": 1
+    },
+    "expected": [
+      {
+        "id": "b",
+        "score": 0.8333333333333334
+      },
+      {
+        "id": "a",
+        "score": 0.5
+      },
+      {
+        "id": "c",
+        "score": 0.3333333333333333
+      }
+    ]
+  },
+  {
+    "name": "Empty rankings",
+    "kwargs": {
+      "lexical": [],
+      "semantic": []
+    },
+    "expected": []
+  },
+  {
+    "name": "Stable tie",
+    "kwargs": {
+      "lexical": [
+        "z"
+      ],
+      "semantic": [
+        "a"
+      ],
+      "k": 1
+    },
+    "expected": [
+      {
+        "id": "a",
+        "score": 0.5
+      },
+      {
+        "id": "z",
+        "score": 0.5
+      }
+    ]
+  },
+  {
+    "name": "Original duplicate positions",
+    "kwargs": {
+      "lexical": [
+        "b",
+        "b",
+        "a"
+      ],
+      "semantic": [],
+      "k": 1
+    },
+    "expected": [
+      {
+        "id": "b",
+        "score": 0.5
+      },
+      {
+        "id": "a",
+        "score": 0.25
+      }
+    ]
+  },
+  {
+    "name": "Invalid k",
+    "kwargs": {
+      "lexical": [],
+      "semantic": [],
+      "k": 0
+    },
+    "raises": "ValueError"
+  }
+]
