@@ -15,7 +15,7 @@ jobs:
           POSTGRES_DB: ael
         ports: ['5432:5432']
         options: >-
-          --health-cmd 'pg_isready -U ael -d ael'
+          --health-cmd "pg_isready -U ael -d ael"
           --health-interval 2s --health-timeout 3s --health-retries 30
     steps:
       - uses: actions/checkout@v4
