@@ -1,5 +1,6 @@
 import {
   BarChart3,
+  Library,
   Braces,
   Code2,
   ExternalLink,
@@ -52,6 +53,10 @@ export function Shell({
             <NavLink to="/progress">
               <BarChart3 size={16} />
               Progress
+            </NavLink>
+            <NavLink to="/curriculum">
+              <Library size={15} />
+              Curriculum
             </NavLink>
           </nav>
           <div className="top-actions">

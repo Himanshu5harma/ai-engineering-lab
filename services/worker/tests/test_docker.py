@@ -29,7 +29,23 @@ def probe(bundles, expected):
     )
 
 
-@pytest.mark.parametrize("slug", ["safe-cosine-similarity", "reciprocal-rank-fusion"])
+@pytest.mark.parametrize(
+    "slug",
+    [
+        "safe-cosine-similarity",
+        "top-k-vector-search",
+        "token-window-chunking",
+        "structure-aware-chunking",
+        "version-aware-evidence-filter",
+        "reciprocal-rank-fusion",
+        "context-budget-allocator",
+        "precision-recall-at-k",
+        "mrr-ndcg-evaluation",
+        "citation-reference-verification",
+        "exponential-backoff-jitter",
+        "permission-aware-tool-registry",
+    ],
+)
 def test_real_references_and_starters(runner, bundles, slug):
     bundle = bundles[slug]
     result = runner.run(bundle, bundle.reference, "submit")
@@ -38,6 +54,10 @@ def test_real_references_and_starters(runner, bundles, slug):
     incorrect = runner.run(bundle, bundle.starter, "submit")
     assert incorrect.status == "failed"
     assert not all(r.passed for r in incorrect.results)
+    from ael_api.config import ROOT
+
+    for mutant in (ROOT / "content/challenges" / slug / "tests").glob("buggy*.py"):
+        assert runner.run(bundle, mutant.read_text(), "submit").status == "failed"
 
 
 def test_infinite_loop_is_killed_and_cleaned_up(runner, bundles):

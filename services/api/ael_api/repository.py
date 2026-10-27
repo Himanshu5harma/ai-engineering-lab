@@ -5,7 +5,7 @@ from sqlalchemy import func, select, text
 from sqlalchemy.orm import Session
 
 from ael_api.config import Settings
-from ael_api.models import Submission, WorkerHealth, now
+from ael_api.models import ChallengeReview, Submission, WorkerHealth, now
 from ael_api.schemas import ExecutionAvailability, ResultView, SubmissionView
 
 ACTIVE = ("queued", "running")
@@ -89,7 +89,17 @@ def progress(session: Session, versions: list[str]) -> dict[str, Any]:
         day = row.created_at.date().isoformat()
         if day in days:
             days[day] += 1
+    reviews = session.scalars(
+        select(ChallengeReview).where(ChallengeReview.version_id.in_(versions))
+    ).all()
+    reviewed = [
+        review.version_id.split(":")[0]
+        for review in reviews
+        if set(review.completed_tasks)
+        == {"performance", "security", "failure_analysis", "tradeoffs", "code_quality", "interview"}
+    ]
     return {
+        "review_completed_slugs": reviewed,
         "solved_slugs": solved,
         "attempted": len(attempted),
         "submissions": len(attempts),

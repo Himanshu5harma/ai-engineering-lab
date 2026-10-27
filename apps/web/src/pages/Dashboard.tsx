@@ -15,6 +15,7 @@ import { api, statusLabel } from "../api/client";
 import { ErrorBox, Loading } from "../components/Feedback";
 import { FeaturedChallenge } from "../components/FeaturedChallenge";
 import { WeekActivity } from "../components/WeekActivity";
+import { CurriculumOverview } from "../components/CurriculumOverview";
 import { useBookmarks } from "../hooks/useBookmarks";
 
 export function Dashboard() {
@@ -44,7 +45,8 @@ export function Dashboard() {
   const data = progress.data;
   const recent = data.recent_submissions[0];
   const lastChallenge = catalog.data.items.find(
-    (c) => c.slug === recent?.challenge_slug,
+    (c) =>
+      c.slug === recent?.challenge_slug && !data.solved_slugs.includes(c.slug),
   );
   const next =
     lastChallenge ||
@@ -78,6 +80,7 @@ export function Dashboard() {
           <ArrowRight size={15} />
         </Link>
       </div>
+      <CurriculumOverview />
       <div className="overview-metrics">
         <Link to="/progress">
           <span className="metric-icon metric-blue">
@@ -160,14 +163,15 @@ export function Dashboard() {
               <span className="subtle">{catalog.data.total} available</span>
             </div>
             <div className="practice-list">
-              {catalog.data.items.map((challenge, index) => (
+              {catalog.data.items.slice(0, 4).map((challenge, index) => (
                 <Link
                   to={`/arena/${challenge.slug}`}
                   key={challenge.slug}
                   className="practice-row"
                 >
                   <span className="row-number">
-                    {String(index + 1).padStart(2, "0")}
+                    {challenge.curriculum_id ||
+                      String(index + 1).padStart(2, "0")}
                   </span>
                   <div className="practice-row-copy">
                     <h3>{challenge.title}</h3>
@@ -258,14 +262,17 @@ export function Dashboard() {
         <aside className="learning-aside" aria-label="Practice progress">
           <section className="panel learning-track">
             <div className="section-title">
-              <h2>Your learning track</h2>
+              <h2>Your first 12 challenges</h2>
               <span className="track-icon">
                 <Layers size={16} />
               </span>
             </div>
-            <span className="track-category">EMBEDDINGS & RETRIEVAL</span>
-            <h3>Build reliable retrieval.</h3>
-            <p>From vector fundamentals to combining search results.</p>
+            <span className="track-category">FOUNDATIONS TO PRODUCTION</span>
+            <h3>Build the core AI toolkit.</h3>
+            <p>
+              Vectors, chunking, evidence security, evaluation, resilience and
+              safe tools.
+            </p>
             <div className="track-evidence">
               <strong>
                 {data.solved_slugs.length} of {data.total_challenges}

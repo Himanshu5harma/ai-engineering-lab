@@ -58,3 +58,23 @@ The redesign passed all 11 frontend tests, ESLint, TypeScript, the production bu
 The clean layout now exposes working global search, topic/status filtering, challenge bookmarks, engineering notes, a paginated Activity page with execution inspection and Python export, and a dedicated Progress page. The overview includes the actual starter-code preview, concept shortcuts, stored execution counts, track completion and runtime status. Bookmarks and notes are browser-local; execution history remains in PostgreSQL.
 
 All 11 frontend tests, ESLint, TypeScript, and the production build passed. The real browser suite was expanded to five passing tests: the two original challenge lifecycles, navigation/theme/mobile filtering, bookmark/search/note persistence, and execution inspection/export/progress. No backend grading or database schema changes were required.
+
+## First-twelve curriculum milestone
+
+The requested order is now R01, R02, R04, R05, R08, R09, G03, E01, E02, G06, P03, A02. All twelve have original complete packages, including a production failure variant, real public/private pytest contracts, a trusted reference and a deliberately buggy implementation.
+
+Executed evidence:
+
+- 211 case fixtures: **61 public + 150 private**. Standalone public/hidden pytest files parameterize the same contracts used by the external container grader.
+- **254 backend/content/infrastructure tests passed**, including real PostgreSQL submission lifecycles for every challenge and sandbox resource probes.
+- A subsequent focused run of **12 Docker reference/starter/mutant tests passed**, including the newly added realistic mutants for the original cosine and RRF packages.
+- **11 frontend tests passed**; Ruff, formatting, strict mypy, ESLint, TypeScript and production builds passed.
+- **16 browser tests passed**: twelve failing-starter → passing-reference → Run → Submit → persisted-history flows, plus navigation/theme/mobile behavior, bookmark/search/note persistence, execution export/progress, and curriculum/manual-review persistence.
+- Browser tests used a separate uniquely named local PostgreSQL database on API port 8001 and frontend port 5175. They did not insert reference runs into the personal database.
+- The updated built frontend on port 8080 passed a further navigation, theme and mobile smoke check. All 59 pre-existing personal submission IDs, content versions and statuses matched the saved checkpoint after the update. The temporary test services and database were removed; the personal worker remains ready.
+- The 88-entry curriculum has exact module targets **64 coding / 10 design / 6 labs / 8 debugging**. Availability is **12 / 0 / 0 / 0**. The other 76 entries are explicitly planned metadata.
+- Migration 0002 adds PostgreSQL engineering self-review separately from automated submissions. `alembic check` reports no drift. The original two challenge grading hashes are preserved by attaching curriculum identity/order outside those digests.
+
+Review tasks cover performance reasoning, security boundaries, incident analysis, alternatives, quality and interview explanation. Completion is learner self-report, not objective certification. Algorithm-specific benchmarking beyond the declared suite deadline remains a review task rather than an invented performance score. Citation reference integrity does not claim semantic entailment. Tool eligibility does not authenticate human approval provenance or execute tools.
+
+Existing warnings remain non-failing: Starlette's httpx test-client deprecation and Monaco's on-demand chunk size. Hosted CI has not been run in this local session. No repository push, external deployment, model call or financial spending was performed.

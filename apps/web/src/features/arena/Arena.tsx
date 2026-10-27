@@ -2,6 +2,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
   Bookmark,
+  ClipboardCheck,
   NotebookPen,
   Check,
   ChevronRight,
@@ -15,7 +16,7 @@ import {
 } from "lucide-react";
 import { lazy, Suspense, useCallback, useEffect, useState } from "react";
 import Markdown from "react-markdown";
-import { Link, useParams } from "react-router-dom";
+import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
   active,
   api,
@@ -26,6 +27,7 @@ import {
 import { ErrorBox, Loading } from "../../components/Feedback";
 import { Results } from "./Results";
 import { useBookmarks } from "../../hooks/useBookmarks";
+import { EngineeringReview } from "./EngineeringReview";
 const PythonEditor = lazy(() =>
   import("./PythonEditor").then((module) => ({ default: module.PythonEditor })),
 );
@@ -78,7 +80,12 @@ function Workspace({
   const [notes, setNotes] = useState(() => readDraft(notesKey, ""));
   const [notesSaved, setNotesSaved] = useState(true);
   const { saved, toggle, error: bookmarkError } = useBookmarks();
-  const [tab, setTab] = useState("problem");
+  const [params] = useSearchParams();
+  const [tab, setTab] = useState(() =>
+    ["problem", "hints", "notes", "review"].includes(params.get("tab") || "")
+      ? params.get("tab")!
+      : "problem",
+  );
   const [bottomTab, setBottomTab] = useState("results");
   const [hints, setHints] = useState(0);
   const [selectedId, setSelectedId] = useState<string>();
@@ -202,7 +209,12 @@ function Workspace({
           All challenges
         </Link>
         <div className="arena-heading-title">
-          <h1>{challenge.title}</h1>
+          <h1>
+            {challenge.curriculum_id && (
+              <span className="challenge-id">{challenge.curriculum_id}</span>
+            )}
+            {challenge.title}
+          </h1>
           <span className={`difficulty ${challenge.difficulty.toLowerCase()}`}>
             {challenge.difficulty}
           </span>
@@ -270,6 +282,15 @@ function Workspace({
             >
               <NotebookPen size={15} />
               Notes
+            </button>
+            <button
+              role="tab"
+              aria-selected={tab === "review"}
+              className={tab === "review" ? "selected" : ""}
+              onClick={() => setTab("review")}
+            >
+              <ClipboardCheck size={15} />
+              Review
             </button>
           </div>
           <div className="problem-scroll" role="tabpanel">
@@ -346,6 +367,8 @@ function Workspace({
                     : "Reveal next hint"}
                 </button>
               </div>
+            ) : tab === "review" ? (
+              <EngineeringReview challenge={challenge} />
             ) : (
               <div className="notes-content">
                 <NotebookPen size={25} />

@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Reserve instruction and answer tokens",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "a",
+          "token_count": 6,
+          "score": 0.9
+        },
+        {
+          "id": "b",
+          "token_count": 4,
+          "score": 0.8
+        },
+        {
+          "id": "c",
+          "token_count": 2,
+          "score": 0.7
+        }
+      ],
+      "context_limit": 12,
+      "reserved_tokens": 4
+    },
+    "expected": {
+      "selected_ids": [
+        "a",
+        "c"
+      ],
+      "used_tokens": 8,
+      "remaining_tokens": 0
+    }
+  },
+  {
+    "name": "Skip too-large top chunk",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "large",
+          "token_count": 99,
+          "score": 1
+        },
+        {
+          "id": "small",
+          "token_count": 3,
+          "score": 0.5
+        }
+      ],
+      "context_limit": 5,
+      "reserved_tokens": 1
+    },
+    "expected": {
+      "selected_ids": [
+        "small"
+      ],
+      "used_tokens": 3,
+      "remaining_tokens": 1
+    }
+  },
+  {
+    "name": "Stable score ties",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "z",
+          "token_count": 2,
+          "score": 1
+        },
+        {
+          "id": "a",
+          "token_count": 2,
+          "score": 1
+        }
+      ],
+      "context_limit": 3,
+      "reserved_tokens": 0
+    },
+    "expected": {
+      "selected_ids": [
+        "a"
+      ],
+      "used_tokens": 2,
+      "remaining_tokens": 1
+    }
+  },
+  {
+    "name": "Zero evidence capacity",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "a",
+          "token_count": 1,
+          "score": 1
+        }
+      ],
+      "context_limit": 5,
+      "reserved_tokens": 5
+    },
+    "expected": {
+      "selected_ids": [],
+      "used_tokens": 0,
+      "remaining_tokens": 0
+    }
+  },
+  {
+    "name": "Reservation exceeds window",
+    "kwargs": {
+      "chunks": [],
+      "context_limit": 1,
+      "reserved_tokens": 2
+    },
+    "raises": "ValueError"
+  }
+]

@@ -1,0 +1,148 @@
+[
+  {
+    "name": "Duplicates consume rank positions",
+    "kwargs": {
+      "retrieved": [
+        "a",
+        "a",
+        "b"
+      ],
+      "relevant": [
+        "a",
+        "b"
+      ],
+      "k": 2
+    },
+    "expected": {
+      "precision": 0.5,
+      "recall": 0.5
+    }
+  },
+  {
+    "name": "Duplicate labels are a set",
+    "kwargs": {
+      "retrieved": [
+        "a"
+      ],
+      "relevant": [
+        "a",
+        "a",
+        "b"
+      ],
+      "k": 1
+    },
+    "expected": {
+      "precision": 1.0,
+      "recall": 0.5
+    }
+  },
+  {
+    "name": "Relevant result below cutoff",
+    "kwargs": {
+      "retrieved": [
+        "x",
+        "y",
+        "a"
+      ],
+      "relevant": [
+        "a"
+      ],
+      "k": 2
+    },
+    "expected": {
+      "precision": 0.0,
+      "recall": 0.0
+    }
+  },
+  {
+    "name": "Empty retrieval",
+    "kwargs": {
+      "retrieved": [],
+      "relevant": [
+        "a"
+      ],
+      "k": 3
+    },
+    "expected": {
+      "precision": 0.0,
+      "recall": 0.0
+    }
+  },
+  {
+    "name": "Boolean cutoff",
+    "kwargs": {
+      "retrieved": [],
+      "relevant": [],
+      "k": true
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Malformed ID beyond cutoff",
+    "kwargs": {
+      "retrieved": [
+        "a",
+        null
+      ],
+      "relevant": [
+        "a"
+      ],
+      "k": 1
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Empty ground truth ID rejected",
+    "kwargs": {
+      "retrieved": [
+        "a"
+      ],
+      "relevant": [
+        ""
+      ],
+      "k": 1
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Upper cutoff bound",
+    "kwargs": {
+      "retrieved": [],
+      "relevant": [],
+      "k": 1001
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "String is not an ID list",
+    "kwargs": {
+      "retrieved": "abc",
+      "relevant": [
+        "a"
+      ],
+      "k": 1
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Full retrieval overlap",
+    "kwargs": {
+      "retrieved": [
+        "c",
+        "b",
+        "a"
+      ],
+      "relevant": [
+        "a",
+        "b",
+        "c",
+        "d"
+      ],
+      "k": 3
+    },
+    "expected": {
+      "precision": 1.0,
+      "recall": 0.75
+    }
+  }
+]

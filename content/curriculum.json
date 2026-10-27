@@ -1,0 +1,641 @@
+{
+  "schema_version": 1,
+  "title": "Applied AI Engineering Curriculum",
+  "modules": [
+    {
+      "id": "coding",
+      "title": "Coding Arena",
+      "target_count": 64,
+      "entries": [
+        {
+          "id": "P01",
+          "title": "Validate complex AI API requests with Pydantic",
+          "difficulty": "E",
+          "track": "python-fastapi",
+          "track_title": "Python and FastAPI Engineering"
+        },
+        {
+          "id": "P02",
+          "title": "Execute concurrent LLM requests with bounded concurrency",
+          "difficulty": "M",
+          "track": "python-fastapi",
+          "track_title": "Python and FastAPI Engineering"
+        },
+        {
+          "id": "P03",
+          "title": "Implement exponential backoff and jitter",
+          "difficulty": "M",
+          "track": "python-fastapi",
+          "track_title": "Python and FastAPI Engineering",
+          "slug": "exponential-backoff-jitter"
+        },
+        {
+          "id": "P04",
+          "title": "Build a per-tenant token-bucket rate limiter",
+          "difficulty": "H",
+          "track": "python-fastapi",
+          "track_title": "Python and FastAPI Engineering"
+        },
+        {
+          "id": "P05",
+          "title": "Implement Server-Sent Events for model output",
+          "difficulty": "M",
+          "track": "python-fastapi",
+          "track_title": "Python and FastAPI Engineering"
+        },
+        {
+          "id": "P06",
+          "title": "Create an idempotent document ingestion endpoint",
+          "difficulty": "H",
+          "track": "python-fastapi",
+          "track_title": "Python and FastAPI Engineering"
+        },
+        {
+          "id": "P07",
+          "title": "Build a provider-independent LLM client",
+          "difficulty": "H",
+          "track": "python-fastapi",
+          "track_title": "Python and FastAPI Engineering"
+        },
+        {
+          "id": "P08",
+          "title": "Implement a tenant-safe TTL cache",
+          "difficulty": "M",
+          "track": "python-fastapi",
+          "track_title": "Python and FastAPI Engineering"
+        },
+        {
+          "id": "P09",
+          "title": "Authenticate and authorize a FastAPI resource endpoint",
+          "difficulty": "H",
+          "track": "python-fastapi",
+          "track_title": "Python and FastAPI Engineering"
+        },
+        {
+          "id": "R01",
+          "title": "Implement cosine similarity",
+          "difficulty": "E",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval",
+          "slug": "safe-cosine-similarity"
+        },
+        {
+          "id": "R02",
+          "title": "Find top-K similar vectors with stable ties",
+          "difficulty": "M",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval",
+          "slug": "top-k-vector-search"
+        },
+        {
+          "id": "R03",
+          "title": "Implement BM25 ranking",
+          "difficulty": "H",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval"
+        },
+        {
+          "id": "R04",
+          "title": "Build token-aware sliding-window chunking",
+          "difficulty": "M",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval",
+          "slug": "token-window-chunking"
+        },
+        {
+          "id": "R05",
+          "title": "Implement heading- and table-aware chunking",
+          "difficulty": "H",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval",
+          "slug": "structure-aware-chunking"
+        },
+        {
+          "id": "R06",
+          "title": "Deduplicate documents using normalized hashes",
+          "difficulty": "M",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval"
+        },
+        {
+          "id": "R07",
+          "title": "Build contextual embedding text",
+          "difficulty": "M",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval"
+        },
+        {
+          "id": "R08",
+          "title": "Filter tenant-, permission- and version-aware evidence",
+          "difficulty": "H",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval",
+          "slug": "version-aware-evidence-filter"
+        },
+        {
+          "id": "R09",
+          "title": "Implement Reciprocal Rank Fusion",
+          "difficulty": "M",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval",
+          "slug": "reciprocal-rank-fusion"
+        },
+        {
+          "id": "R10",
+          "title": "Implement Maximal Marginal Relevance",
+          "difficulty": "H",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval"
+        },
+        {
+          "id": "R11",
+          "title": "Integrate a retrieval reranker",
+          "difficulty": "H",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval"
+        },
+        {
+          "id": "R12",
+          "title": "Measure ANN recall against exact search",
+          "difficulty": "H",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval"
+        },
+        {
+          "id": "R13",
+          "title": "Implement incremental reindexing and stale-document removal",
+          "difficulty": "S",
+          "track": "embeddings-retrieval",
+          "track_title": "Embeddings, Vector Databases and Retrieval"
+        },
+        {
+          "id": "G01",
+          "title": "Build ingestion with source provenance",
+          "difficulty": "M",
+          "track": "production-rag",
+          "track_title": "Production RAG Implementation"
+        },
+        {
+          "id": "G02",
+          "title": "Rank evidence by relevance, authority and freshness",
+          "difficulty": "H",
+          "track": "production-rag",
+          "track_title": "Production RAG Implementation"
+        },
+        {
+          "id": "G03",
+          "title": "Allocate a bounded context window",
+          "difficulty": "H",
+          "track": "production-rag",
+          "track_title": "Production RAG Implementation",
+          "slug": "context-budget-allocator"
+        },
+        {
+          "id": "G04",
+          "title": "Extract product, version and region constraints",
+          "difficulty": "M",
+          "track": "production-rag",
+          "track_title": "Production RAG Implementation"
+        },
+        {
+          "id": "G05",
+          "title": "Generate citation-backed answers",
+          "difficulty": "H",
+          "track": "production-rag",
+          "track_title": "Production RAG Implementation"
+        },
+        {
+          "id": "G06",
+          "title": "Verify citations against source documents",
+          "difficulty": "H",
+          "track": "production-rag",
+          "track_title": "Production RAG Implementation",
+          "slug": "citation-reference-verification"
+        },
+        {
+          "id": "G07",
+          "title": "Abstain on conflicting or insufficient evidence",
+          "difficulty": "S",
+          "track": "production-rag",
+          "track_title": "Production RAG Implementation"
+        },
+        {
+          "id": "G08",
+          "title": "Implement conversation-aware retrieval safely",
+          "difficulty": "H",
+          "track": "production-rag",
+          "track_title": "Production RAG Implementation"
+        },
+        {
+          "id": "G09",
+          "title": "Build a streaming RAG endpoint with failure handling",
+          "difficulty": "S",
+          "track": "production-rag",
+          "track_title": "Production RAG Implementation"
+        },
+        {
+          "id": "E01",
+          "title": "Implement Precision@K and Recall@K",
+          "difficulty": "M",
+          "track": "rag-evaluation",
+          "track_title": "RAG and LLM Evaluation",
+          "slug": "precision-recall-at-k"
+        },
+        {
+          "id": "E02",
+          "title": "Implement MRR and nDCG",
+          "difficulty": "M",
+          "track": "rag-evaluation",
+          "track_title": "RAG and LLM Evaluation",
+          "slug": "mrr-ndcg-evaluation"
+        },
+        {
+          "id": "E03",
+          "title": "Evaluate citation validity, coverage and correctness",
+          "difficulty": "H",
+          "track": "rag-evaluation",
+          "track_title": "RAG and LLM Evaluation"
+        },
+        {
+          "id": "E04",
+          "title": "Implement groundedness evaluation",
+          "difficulty": "H",
+          "track": "rag-evaluation",
+          "track_title": "RAG and LLM Evaluation"
+        },
+        {
+          "id": "E05",
+          "title": "Create versioned golden datasets",
+          "difficulty": "H",
+          "track": "rag-evaluation",
+          "track_title": "RAG and LLM Evaluation"
+        },
+        {
+          "id": "E06",
+          "title": "Slice evaluation by tenant, region and document version",
+          "difficulty": "H",
+          "track": "rag-evaluation",
+          "track_title": "RAG and LLM Evaluation"
+        },
+        {
+          "id": "E07",
+          "title": "Build a RAG evaluation regression gate",
+          "difficulty": "S",
+          "track": "rag-evaluation",
+          "track_title": "RAG and LLM Evaluation"
+        },
+        {
+          "id": "E08",
+          "title": "Trace and classify retrieval, generation and tool failures",
+          "difficulty": "S",
+          "track": "rag-evaluation",
+          "track_title": "RAG and LLM Evaluation"
+        },
+        {
+          "id": "A01",
+          "title": "Validate JSON tool arguments against schemas",
+          "difficulty": "E",
+          "track": "agentic-ai",
+          "track_title": "Agents, LangGraph and Tool Calling"
+        },
+        {
+          "id": "A02",
+          "title": "Implement a permission-aware tool registry",
+          "difficulty": "M",
+          "track": "agentic-ai",
+          "track_title": "Agents, LangGraph and Tool Calling",
+          "slug": "permission-aware-tool-registry"
+        },
+        {
+          "id": "A03",
+          "title": "Build a deterministic task router",
+          "difficulty": "M",
+          "track": "agentic-ai",
+          "track_title": "Agents, LangGraph and Tool Calling"
+        },
+        {
+          "id": "A04",
+          "title": "Implement a bounded agent state machine",
+          "difficulty": "H",
+          "track": "agentic-ai",
+          "track_title": "Agents, LangGraph and Tool Calling"
+        },
+        {
+          "id": "A05",
+          "title": "Execute parallel tools with partial-failure handling",
+          "difficulty": "H",
+          "track": "agentic-ai",
+          "track_title": "Agents, LangGraph and Tool Calling"
+        },
+        {
+          "id": "A06",
+          "title": "Prevent duplicate effects during retries",
+          "difficulty": "H",
+          "track": "agentic-ai",
+          "track_title": "Agents, LangGraph and Tool Calling"
+        },
+        {
+          "id": "A07",
+          "title": "Require human approval for sensitive tools",
+          "difficulty": "S",
+          "track": "agentic-ai",
+          "track_title": "Agents, LangGraph and Tool Calling"
+        },
+        {
+          "id": "A08",
+          "title": "Implement checkpointing and workflow resumption",
+          "difficulty": "S",
+          "track": "agentic-ai",
+          "track_title": "Agents, LangGraph and Tool Calling"
+        },
+        {
+          "id": "A09",
+          "title": "Evaluate agents using replayable execution traces",
+          "difficulty": "S",
+          "track": "agentic-ai",
+          "track_title": "Agents, LangGraph and Tool Calling"
+        },
+        {
+          "id": "S01",
+          "title": "Enforce role- and attribute-based document access",
+          "difficulty": "H",
+          "track": "ai-security",
+          "track_title": "AI Security and Guardrails"
+        },
+        {
+          "id": "S02",
+          "title": "Keep retrieved instructions outside tool authority",
+          "difficulty": "S",
+          "track": "ai-security",
+          "track_title": "AI Security and Guardrails"
+        },
+        {
+          "id": "S03",
+          "title": "Redact sensitive AI logs and traces",
+          "difficulty": "M",
+          "track": "ai-security",
+          "track_title": "AI Security and Guardrails"
+        },
+        {
+          "id": "S04",
+          "title": "Validate model-generated structured actions",
+          "difficulty": "H",
+          "track": "ai-security",
+          "track_title": "AI Security and Guardrails"
+        },
+        {
+          "id": "S05",
+          "title": "Prevent cross-tenant cache leakage",
+          "difficulty": "S",
+          "track": "ai-security",
+          "track_title": "AI Security and Guardrails"
+        },
+        {
+          "id": "S06",
+          "title": "Handle untrusted tool and document output",
+          "difficulty": "H",
+          "track": "ai-security",
+          "track_title": "AI Security and Guardrails"
+        },
+        {
+          "id": "S07",
+          "title": "Build adversarial RAG and agent tests",
+          "difficulty": "S",
+          "track": "ai-security",
+          "track_title": "AI Security and Guardrails"
+        },
+        {
+          "id": "O01",
+          "title": "Implement distributed request deadlines",
+          "difficulty": "H",
+          "track": "production-ai",
+          "track_title": "Production AI and LLMOps"
+        },
+        {
+          "id": "O02",
+          "title": "Implement a model-provider circuit breaker",
+          "difficulty": "H",
+          "track": "production-ai",
+          "track_title": "Production AI and LLMOps"
+        },
+        {
+          "id": "O03",
+          "title": "Build durable ingestion with dead-letter handling",
+          "difficulty": "H",
+          "track": "production-ai",
+          "track_title": "Production AI and LLMOps"
+        },
+        {
+          "id": "O04",
+          "title": "Make background processing retry-safe",
+          "difficulty": "H",
+          "track": "production-ai",
+          "track_title": "Production AI and LLMOps"
+        },
+        {
+          "id": "O05",
+          "title": "Invalidate retrieval caches after updates",
+          "difficulty": "H",
+          "track": "production-ai",
+          "track_title": "Production AI and LLMOps"
+        },
+        {
+          "id": "O06",
+          "title": "Add distributed AI request tracing",
+          "difficulty": "H",
+          "track": "production-ai",
+          "track_title": "Production AI and LLMOps"
+        },
+        {
+          "id": "O07",
+          "title": "Calculate token usage and estimated costs",
+          "difficulty": "M",
+          "track": "production-ai",
+          "track_title": "Production AI and LLMOps"
+        },
+        {
+          "id": "O08",
+          "title": "Benchmark throughput, percentiles and retrieval quality",
+          "difficulty": "S",
+          "track": "production-ai",
+          "track_title": "Production AI and LLMOps"
+        },
+        {
+          "id": "O09",
+          "title": "Build AI release and rollback gates",
+          "difficulty": "S",
+          "track": "production-ai",
+          "track_title": "Production AI and LLMOps"
+        }
+      ]
+    },
+    {
+      "id": "system_design",
+      "title": "System Design Studio",
+      "target_count": 10,
+      "entries": [
+        {
+          "id": "D01",
+          "title": "Design enterprise RAG for one million documents",
+          "focus": "Indexing, retrieval, scaling, authorization"
+        },
+        {
+          "id": "D02",
+          "title": "Design ingestion for 100000 document updates per day",
+          "focus": "Queues, parallelism, failure handling"
+        },
+        {
+          "id": "D03",
+          "title": "Design a version-aware support AI assistant",
+          "focus": "Metadata, authority, citations, freshness"
+        },
+        {
+          "id": "D04",
+          "title": "Design an LLM API gateway",
+          "focus": "Rate limits, routing, fallback, cost"
+        },
+        {
+          "id": "D05",
+          "title": "Design an AI evaluation and observability platform",
+          "focus": "Datasets, metrics, traces, release gates"
+        },
+        {
+          "id": "D06",
+          "title": "Design a multi-agent incident investigation system",
+          "focus": "State, tools, authorization, approvals"
+        },
+        {
+          "id": "D07",
+          "title": "Design streaming AI for 10000 concurrent sessions",
+          "focus": "Concurrency, throughput, latency"
+        },
+        {
+          "id": "D08",
+          "title": "Design an affordable small-business document assistant",
+          "focus": "Cost, simplicity, privacy"
+        },
+        {
+          "id": "D09",
+          "title": "Design hybrid search for millions of documents",
+          "focus": "BM25, vector search, reranking"
+        },
+        {
+          "id": "D10",
+          "title": "Design a secure online Python judge",
+          "focus": "Sandboxing, queues, resource controls"
+        }
+      ]
+    },
+    {
+      "id": "labs",
+      "title": "Practical Labs",
+      "target_count": 6,
+      "entries": [
+        {
+          "id": "L01",
+          "title": "Production LLM Gateway",
+          "focus": "Fallback, streaming, request limits and usage accounting"
+        },
+        {
+          "id": "L02",
+          "title": "Document Ingestion and Search Engine",
+          "focus": "Incremental updates, duplicates and measured retrieval relevance"
+        },
+        {
+          "id": "L03",
+          "title": "Enterprise RAG Assistant",
+          "focus": "Evaluated answers and zero unauthorized retrievals in the test suite"
+        },
+        {
+          "id": "L04",
+          "title": "Agentic Investigation Assistant",
+          "focus": "Tool selection, authorization, approvals, recovery and task success"
+        },
+        {
+          "id": "L05",
+          "title": "AI Evaluation Platform",
+          "focus": "Detect an intentionally introduced retrieval regression"
+        },
+        {
+          "id": "L06",
+          "title": "Deploy and Operate a Production AI Application",
+          "focus": "Reproducible deployment, release checks and operational behavior"
+        }
+      ]
+    },
+    {
+      "id": "debugging",
+      "title": "Production Debugging Arena",
+      "target_count": 8,
+      "entries": [
+        {
+          "id": "B01",
+          "title": "RAG returns an outdated policy",
+          "focus": "Filters, validity, source authority"
+        },
+        {
+          "id": "B02",
+          "title": "A user receives another tenant's document",
+          "focus": "Authorization before retrieval and cache isolation"
+        },
+        {
+          "id": "B03",
+          "title": "RAG latency suddenly triples",
+          "focus": "Reranking, provider calls, traces and bottlenecks"
+        },
+        {
+          "id": "B04",
+          "title": "An agent executes a payment twice",
+          "focus": "Retries, idempotency and recovery"
+        },
+        {
+          "id": "B05",
+          "title": "Retrieval quality drops after chunk-size changes",
+          "focus": "Recall@K, nDCG and chunking experiments"
+        },
+        {
+          "id": "B06",
+          "title": "Convincing answers contain invalid citations",
+          "focus": "Source mapping, validation and grounding"
+        },
+        {
+          "id": "B07",
+          "title": "Ingestion creates duplicate and stale embeddings",
+          "focus": "Idempotency and index lifecycle"
+        },
+        {
+          "id": "B08",
+          "title": "A retrieved page requests unauthorized tools",
+          "focus": "Prompt injection, permissions and trust boundaries"
+        }
+      ]
+    }
+  ],
+  "first_release": [
+    "R01",
+    "R02",
+    "R04",
+    "R05",
+    "R08",
+    "R09",
+    "G03",
+    "E01",
+    "E02",
+    "G06",
+    "P03",
+    "A02"
+  ],
+  "weekly_hours": {
+    "coding": 6,
+    "system_design": 3,
+    "labs": 8,
+    "debugging": 3
+  },
+  "design_deliverables": [
+    "Component diagram",
+    "Request and data flow",
+    "Capacity assumptions",
+    "Failure analysis",
+    "Architectural decision record"
+  ]
+}

@@ -30,6 +30,8 @@ export type Submission = {
   code: string | null;
 };
 export type ChallengeSummary = {
+  curriculum_id?: string | null;
+  learning_order?: number | null;
   slug: string;
   version_id: string;
   title: string;
@@ -40,6 +42,7 @@ export type ChallengeSummary = {
   public_count: number;
 };
 export type Challenge = ChallengeSummary & {
+  production_review?: string;
   problem: string;
   starter_code: string;
   hints: string[];
@@ -57,6 +60,7 @@ export type Challenge = ChallengeSummary & {
 export type Availability = { available: boolean; message: string };
 export type Progress = {
   solved_slugs: string[];
+  review_completed_slugs?: string[];
   attempted: number;
   submissions: number;
   runs: number;
@@ -95,7 +99,9 @@ export async function request<T>(path: string, init?: RequestInit): Promise<T> {
 }
 export const api = {
   challenges: () =>
-    request<{ items: ChallengeSummary[]; total: number }>("/challenges"),
+    request<{ items: ChallengeSummary[]; total: number }>(
+      "/challenges?limit=100",
+    ),
   challenge: (slug: string) =>
     request<Challenge>(`/challenges/${encodeURIComponent(slug)}`),
   availability: () => request<Availability>("/execution"),
@@ -119,5 +125,56 @@ export const api = {
         code,
         action,
       }),
+    }),
+};
+
+export type Review = {
+  version_id: string;
+  tasks: { id: string; title: string; description: string }[];
+  completed_tasks: string[];
+  notes: string;
+  code_verified: boolean;
+  updated_at: string | null;
+  evidence_type: string;
+  notice: string;
+};
+export type CurriculumItem = {
+  id: string;
+  title: string;
+  difficulty: string | null;
+  track: string | null;
+  track_title: string | null;
+  slug: string | null;
+  focus: string | null;
+  available: boolean;
+  learning_order: number | null;
+};
+export type Curriculum = {
+  title: string;
+  total_planned: number;
+  first_release: string[];
+  weekly_hours: Record<string, number>;
+  design_deliverables: string[];
+  modules: {
+    id: string;
+    title: string;
+    target_count: number;
+    available_count: number;
+    entries: CurriculumItem[];
+  }[];
+};
+export const curriculumApi = {
+  plan: () => request<Curriculum>("/curriculum"),
+  review: (slug: string) =>
+    request<Review>(`/challenges/${encodeURIComponent(slug)}/review`),
+  saveReview: (
+    slug: string,
+    version_id: string,
+    completed_tasks: string[],
+    notes: string,
+  ) =>
+    request<Review>(`/challenges/${encodeURIComponent(slug)}/review`, {
+      method: "POST",
+      body: JSON.stringify({ version_id, completed_tasks, notes }),
     }),
 };

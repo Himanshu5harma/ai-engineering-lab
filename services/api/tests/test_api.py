@@ -22,12 +22,14 @@ def payload(bundles, code="correct", action="submit"):
     )
 
 
-def test_health_catalog_filters_and_public_contract(client):
+def test_health_catalog_filters_and_public_contract(client, bundles):
     assert client.get("/api/v1/health").status_code == 200
     assert client.get("/api/v1/health").json()["execution"]["available"] is False
-    assert len(client.get("/api/v1/tracks").json()) == 1
+    assert len(client.get("/api/v1/tracks").json()) == len(
+        {b.metadata.track for b in bundles.values()}
+    )
     catalog = client.get("/api/v1/challenges").json()
-    assert catalog["total"] == 2
+    assert catalog["total"] == 12
     assert client.get("/api/v1/challenges?difficulty=Foundation").json()["total"] == 1
     assert len(client.get("/api/v1/challenges?limit=1&offset=1").json()["items"]) == 1
     assert client.get("/api/v1/challenges?limit=101").status_code == 422

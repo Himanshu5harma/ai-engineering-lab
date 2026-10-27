@@ -11,6 +11,7 @@ import { Link } from "react-router-dom";
 import { api } from "../api/client";
 import { ErrorBox, Loading } from "../components/Feedback";
 import { WeekActivity } from "../components/WeekActivity";
+import { FirstReleasePath } from "../components/FirstReleasePath";
 
 export function Progress() {
   const progress = useQuery({ queryKey: ["progress"], queryFn: api.progress });
@@ -76,6 +77,7 @@ export function Progress() {
           <span>Public test runs</span>
         </div>
       </div>
+      <FirstReleasePath />
       <div className="progress-layout">
         <section className="track-detail-panel">
           <div className="section-title">
@@ -89,6 +91,7 @@ export function Progress() {
               .filter((c) => c.track === track)
               .sort(
                 (a, b) =>
+                  (a.learning_order ?? 999) - (b.learning_order ?? 999) ||
                   rank.indexOf(a.difficulty) - rank.indexOf(b.difficulty),
               );
             const solved = challenges.filter((c) =>

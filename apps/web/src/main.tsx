@@ -8,6 +8,7 @@ import { Catalog } from "./pages/Catalog";
 import { Dashboard } from "./pages/Dashboard";
 import { Activity } from "./pages/Activity";
 import { Progress } from "./pages/Progress";
+import { Curriculum } from "./pages/Curriculum";
 import "./styles.css";
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -47,6 +48,7 @@ function App() {
         <Route path="arena" element={<Catalog />} />
         <Route path="activity" element={<Activity />} />
         <Route path="progress" element={<Progress />} />
+        <Route path="curriculum" element={<Curriculum />} />
         <Route path="arena/:slug" element={<Arena theme={theme} />} />
         <Route
           path="*"

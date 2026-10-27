@@ -1,0 +1,180 @@
+[
+  {
+    "name": "Empty evidence",
+    "kwargs": {
+      "chunks": [],
+      "context_limit": 10,
+      "reserved_tokens": 3
+    },
+    "expected": {
+      "selected_ids": [],
+      "used_tokens": 0,
+      "remaining_tokens": 7
+    }
+  },
+  {
+    "name": "Negative relevance remains valid",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "a",
+          "token_count": 2,
+          "score": -1
+        }
+      ],
+      "context_limit": 3,
+      "reserved_tokens": 0
+    },
+    "expected": {
+      "selected_ids": [
+        "a"
+      ],
+      "used_tokens": 2,
+      "remaining_tokens": 1
+    }
+  },
+  {
+    "name": "Exact fit accepted",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "a",
+          "token_count": 3,
+          "score": 1
+        }
+      ],
+      "context_limit": 5,
+      "reserved_tokens": 2
+    },
+    "expected": {
+      "selected_ids": [
+        "a"
+      ],
+      "used_tokens": 3,
+      "remaining_tokens": 0
+    }
+  },
+  {
+    "name": "Duplicate IDs rejected",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "a",
+          "token_count": 1,
+          "score": 1
+        },
+        {
+          "id": "a",
+          "token_count": 1,
+          "score": 2
+        }
+      ],
+      "context_limit": 3,
+      "reserved_tokens": 0
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "No zero token chunks",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "a",
+          "token_count": 0,
+          "score": 1
+        }
+      ],
+      "context_limit": 0,
+      "reserved_tokens": 0
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Boolean token count",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "a",
+          "token_count": true,
+          "score": 1
+        }
+      ],
+      "context_limit": 5,
+      "reserved_tokens": 0
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Boolean score",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "a",
+          "token_count": 1,
+          "score": true
+        }
+      ],
+      "context_limit": 5,
+      "reserved_tokens": 0
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Infinite score",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "a",
+          "token_count": 1,
+          "score": {
+            "$float": "inf"
+          }
+        }
+      ],
+      "context_limit": 5,
+      "reserved_tokens": 0
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Missing token count",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "a",
+          "score": 1
+        }
+      ],
+      "context_limit": 5,
+      "reserved_tokens": 0
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Negative reservation",
+    "kwargs": {
+      "chunks": [],
+      "context_limit": 3,
+      "reserved_tokens": -1
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Boolean budget",
+    "kwargs": {
+      "chunks": [],
+      "context_limit": true,
+      "reserved_tokens": 0
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Capacity ceiling",
+    "kwargs": {
+      "chunks": [],
+      "context_limit": 1000001,
+      "reserved_tokens": 0
+    },
+    "raises": "ValueError"
+  }
+]

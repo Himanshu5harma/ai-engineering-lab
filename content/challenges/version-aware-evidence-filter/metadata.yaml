@@ -1,0 +1,26 @@
+schema_version: 1
+slug: version-aware-evidence-filter
+version: 1
+title: Filter evidence before it can leak
+difficulty: Advanced
+track: embeddings-retrieval
+tags:
+- authorization
+- document versions
+- tenant isolation
+function_name: filter_evidence
+summary: Filter candidate evidence by tenant, product, numeric version range, validity
+  dates, and explicit role access.
+learning_objectives:
+- Fail closed on missing authorization metadata
+- Compare numeric version ranges correctly
+- Enforce validity before context assembly
+constraints:
+- At most 10000 chunks. Version components have at most six digits and six segments.
+  The suite shares an 8-second execution budget.
+- Authorization must run before retrieved bodies reach a model, log, reranker, or
+  cross-tenant cache. Post-filtering alone is not a complete retrieval security architecture.
+- Inputs must not be mutated. Invalid request arguments raise ValueError unless explicitly
+  stated otherwise.
+production_relevance: Filter candidate evidence by tenant, product, numeric version
+  range, validity dates, and explicit role access.

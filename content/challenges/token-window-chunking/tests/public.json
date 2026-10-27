@@ -1,0 +1,114 @@
+[
+  {
+    "name": "Overlapping windows",
+    "kwargs": {
+      "tokens": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e"
+      ],
+      "window_size": 3,
+      "overlap": 1
+    },
+    "expected": [
+      {
+        "start": 0,
+        "end": 3,
+        "tokens": [
+          "a",
+          "b",
+          "c"
+        ]
+      },
+      {
+        "start": 2,
+        "end": 5,
+        "tokens": [
+          "c",
+          "d",
+          "e"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "No overlap",
+    "kwargs": {
+      "tokens": [
+        "a",
+        "b",
+        "c",
+        "d",
+        "e"
+      ],
+      "window_size": 2,
+      "overlap": 0
+    },
+    "expected": [
+      {
+        "start": 0,
+        "end": 2,
+        "tokens": [
+          "a",
+          "b"
+        ]
+      },
+      {
+        "start": 2,
+        "end": 4,
+        "tokens": [
+          "c",
+          "d"
+        ]
+      },
+      {
+        "start": 4,
+        "end": 5,
+        "tokens": [
+          "e"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Short document",
+    "kwargs": {
+      "tokens": [
+        "x"
+      ],
+      "window_size": 5,
+      "overlap": 2
+    },
+    "expected": [
+      {
+        "start": 0,
+        "end": 1,
+        "tokens": [
+          "x"
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Empty document",
+    "kwargs": {
+      "tokens": [],
+      "window_size": 3,
+      "overlap": 0
+    },
+    "expected": []
+  },
+  {
+    "name": "Invalid overlap",
+    "kwargs": {
+      "tokens": [
+        "a"
+      ],
+      "window_size": 2,
+      "overlap": 2
+    },
+    "raises": "ValueError"
+  }
+]

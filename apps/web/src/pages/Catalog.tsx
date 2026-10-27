@@ -47,7 +47,7 @@ export function Catalog() {
   const items = catalog.data.items
     .filter(
       (c) =>
-        `${c.title} ${c.tags.join(" ")}`
+        `${c.curriculum_id || ""} ${c.title} ${c.tags.join(" ")}`
           .toLowerCase()
           .includes(search.toLowerCase()) &&
         (difficulty === "All difficulties" || c.difficulty === difficulty) &&
@@ -60,7 +60,8 @@ export function Catalog() {
     .sort((a, b) =>
       sort === "title"
         ? a.title.localeCompare(b.title)
-        : rank.indexOf(a.difficulty) - rank.indexOf(b.difficulty),
+        : (a.learning_order ?? 999) - (b.learning_order ?? 999) ||
+          rank.indexOf(a.difficulty) - rank.indexOf(b.difficulty),
     );
   const counts: Record<string, number> = {
     all: catalog.data.total,
@@ -212,7 +213,7 @@ export function Catalog() {
               <article key={c.slug} className="challenge-card">
                 <Link to={`/arena/${c.slug}`} className="challenge-main-link">
                   <span className="challenge-number">
-                    {String(index + 1).padStart(2, "0")}
+                    {c.curriculum_id || String(index + 1).padStart(2, "0")}
                   </span>
                   <div className="challenge-card-content">
                     <div className="challenge-title-row">

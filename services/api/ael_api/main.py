@@ -16,9 +16,11 @@ from starlette.types import ASGIApp, Message, Receive, Scope, Send
 
 from ael_api.config import Settings
 from ael_api.content import load_bundles
+from ael_api.curriculum import load_curriculum
 from ael_api.db import database, sync_content
-from ael_api.models import Submission, Track
+from ael_api.models import ChallengeReview, Submission, Track, now
 from ael_api.repository import availability, lock_queue, progress, queue_size, view
+from ael_api.reviews import ReviewUpdate, review_view
 from ael_api.schemas import CreateSubmission, ExecutionAvailability, SubmissionView
 
 log = logging.getLogger("ael.api")
@@ -76,6 +78,7 @@ def create_app(
         engine, sessions = database(settings.database_url)
     factory = sessions
     bundles = load_bundles(settings.content_dir)
+    curriculum = load_curriculum(settings.content_dir.parent / "curriculum.json")
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -174,6 +177,14 @@ def create_app(
     def execution(session: DB) -> ExecutionAvailability:
         return availability(session, settings)
 
+    @app.get("/api/v1/curriculum")
+    def curriculum_plan() -> dict[str, Any]:
+        if curriculum is None:
+            raise HTTPException(
+                404, {"code": "curriculum_unavailable", "message": "No curriculum configured"}
+            )
+        return curriculum.view(bundles)
+
     @app.get("/api/v1/tracks")
     def tracks(session: DB) -> list[dict[str, str]]:
         return [{"id": t.id, "title": t.title} for t in session.scalars(select(Track))]
@@ -192,20 +203,35 @@ def create_app(
             and (not difficulty or b.metadata.difficulty == difficulty)
         ]
         return {
-            "items": [
-                {
-                    **b.metadata.model_dump(),
-                    "version_id": b.version_id,
-                    "public_count": len(b.public),
-                }
-                for b in found[offset : offset + limit]
-            ],
+            "items": [b.summary() for b in found[offset : offset + limit]],
             "total": len(found),
         }
 
     @app.get("/api/v1/challenges/{slug}")
     def challenge(slug: str) -> dict[str, Any]:
         return dict(bundle_for(slug).learner())
+
+    @app.get("/api/v1/challenges/{slug}/review")
+    def get_review(slug: str, session: DB) -> dict[str, Any]:
+        return review_view(session, bundle_for(slug))
+
+    @app.post("/api/v1/challenges/{slug}/review")
+    def save_review(slug: str, payload: ReviewUpdate, session: DB) -> dict[str, Any]:
+        bundle = bundle_for(slug)
+        if payload.version_id != bundle.version_id:
+            raise HTTPException(
+                409, {"code": "content_changed", "message": "Challenge changed. Reload the review."}
+            )
+        session.merge(
+            ChallengeReview(
+                version_id=bundle.version_id,
+                completed_tasks=list(dict.fromkeys(payload.completed_tasks)),
+                notes=payload.notes,
+                updated_at=now(),
+            )
+        )
+        session.commit()
+        return review_view(session, bundle)
 
     @app.post("/api/v1/submissions", status_code=202, response_model=SubmissionView)
     def submit(payload: CreateSubmission, session: DB) -> SubmissionView:

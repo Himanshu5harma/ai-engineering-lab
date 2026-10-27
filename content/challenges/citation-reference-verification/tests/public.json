@@ -1,0 +1,153 @@
+[
+  {
+    "name": "Exact quote accepted",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {
+              "source_id": "s1",
+              "quote": "must be idempotent"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "s1",
+          "text": "Retries must be idempotent."
+        }
+      ]
+    },
+    "expected": {
+      "all_references_valid": true,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": true,
+          "errors": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "Unknown source rejected",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {
+              "source_id": "missing",
+              "quote": "quote"
+            }
+          ]
+        }
+      ],
+      "sources": []
+    },
+    "expected": {
+      "all_references_valid": false,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": false,
+          "errors": [
+            "citation 0: unknown_source"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Fabricated quote rejected",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {
+              "source_id": "s1",
+              "quote": "always safe"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "s1",
+          "text": "Retries require idempotency."
+        }
+      ]
+    },
+    "expected": {
+      "all_references_valid": false,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": false,
+          "errors": [
+            "citation 0: quote_not_found"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Uncited claim fails",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": []
+        }
+      ],
+      "sources": []
+    },
+    "expected": {
+      "all_references_valid": false,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": false,
+          "errors": [
+            "missing_citation"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Whitespace normalized",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {
+              "source_id": "s1",
+              "quote": "bounded  retries"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "s1",
+          "text": "Use bounded\n\t retries."
+        }
+      ]
+    },
+    "expected": {
+      "all_references_valid": true,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": true,
+          "errors": []
+        }
+      ]
+    }
+  }
+]

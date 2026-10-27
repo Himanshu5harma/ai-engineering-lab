@@ -27,12 +27,22 @@ class BoundedOutput(io.StringIO):
 def decode_inputs(value):
     """Decode fixture-only nonfinite floats without executing fixture expressions."""
     if isinstance(value, dict):
+        if set(value) == {"$set"} and isinstance(value["$set"], list):
+            return set(decode_inputs(item) for item in value["$set"])
         if set(value) == {"$float"} and value["$float"] in ("nan", "inf", "-inf"):
             return float(value["$float"])
         return {key: decode_inputs(item) for key, item in value.items()}
     if isinstance(value, list):
         return [decode_inputs(item) for item in value]
     return value
+
+
+def snapshot_inputs(value):
+    return json.dumps(
+        value,
+        sort_keys=True,
+        default=lambda item: sorted(item) if isinstance(item, set) else str(item),
+    )
 
 
 def main():
@@ -53,7 +63,7 @@ def main():
         print(json.dumps([response for _ in payload["inputs"]], allow_nan=False))
         return
     for kwargs in decode_inputs(payload["inputs"]):
-        original = json.dumps(kwargs, sort_keys=True)
+        original = snapshot_inputs(kwargs)
         output = BoundedOutput()
         response = {}
         try:
@@ -64,7 +74,7 @@ def main():
         except BaseException as exc:
             response = {"exception": type(exc).__name__, "error": str(exc)[:2000]}
         response["stdout"] = output.getvalue()
-        response["mutated"] = original != json.dumps(kwargs, sort_keys=True)
+        response["mutated"] = original != snapshot_inputs(kwargs)
         responses.append(response)
     sys.stdout.write(json.dumps(responses, allow_nan=False, separators=(",", ":")))
 

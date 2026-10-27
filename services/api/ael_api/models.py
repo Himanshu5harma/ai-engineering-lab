@@ -83,3 +83,11 @@ class WorkerHealth(Base):
     heartbeat_at: Mapped[datetime] = mapped_column(DateTime(timezone=True))
     available: Mapped[bool]
     message: Mapped[str] = mapped_column(Text)
+
+
+class ChallengeReview(Base):
+    __tablename__ = "challenge_reviews"
+    version_id: Mapped[str] = mapped_column(ForeignKey("challenge_versions.id"), primary_key=True)
+    completed_tasks: Mapped[list[str]] = mapped_column(JSON, default=list)
+    notes: Mapped[str] = mapped_column(Text, default="")
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)

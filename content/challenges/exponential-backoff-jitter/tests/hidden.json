@@ -1,0 +1,231 @@
+[
+  {
+    "name": "Cap below base delay",
+    "kwargs": {
+      "attempts": 2,
+      "base_delay": 10,
+      "max_delay": 2,
+      "jitter": 0,
+      "random_values": [
+        1,
+        1
+      ]
+    },
+    "expected": [
+      2,
+      2
+    ]
+  },
+  {
+    "name": "No jitter ignores sample magnitude",
+    "kwargs": {
+      "attempts": 2,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": [
+        0,
+        1
+      ]
+    },
+    "expected": [
+      1,
+      2
+    ]
+  },
+  {
+    "name": "Zero base rejected",
+    "kwargs": {
+      "attempts": 4,
+      "base_delay": 0,
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": [
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Negative max delay",
+    "kwargs": {
+      "attempts": 4,
+      "base_delay": 1,
+      "max_delay": -1,
+      "jitter": 0,
+      "random_values": [
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Jitter above one",
+    "kwargs": {
+      "attempts": 4,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 1.1,
+      "random_values": [
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Jitter below zero",
+    "kwargs": {
+      "attempts": 4,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": -0.1,
+      "random_values": [
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Sample above one",
+    "kwargs": {
+      "attempts": 4,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": [
+        0,
+        0,
+        0,
+        2
+      ]
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Boolean sample rejected",
+    "kwargs": {
+      "attempts": 4,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": [
+        true,
+        0,
+        0,
+        0
+      ]
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Boolean attempts rejected",
+    "kwargs": {
+      "attempts": true,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": [
+        0
+      ]
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Nonfinite config on empty schedule",
+    "kwargs": {
+      "attempts": 0,
+      "base_delay": {
+        "$float": "inf"
+      },
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": []
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Attempt ceiling",
+    "kwargs": {
+      "attempts": 31,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": [
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Tiny positive delays",
+    "kwargs": {
+      "attempts": 3,
+      "base_delay": 0.125,
+      "max_delay": 0.5,
+      "jitter": 0,
+      "random_values": [
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "expected": [
+      0.125,
+      0.25,
+      0.5
+    ]
+  },
+  {
+    "name": "No uncontrolled random fallback",
+    "kwargs": {
+      "attempts": 1,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": []
+    },
+    "raises": "ValueError"
+  }
+]

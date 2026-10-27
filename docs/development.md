@@ -39,3 +39,26 @@ With all development services running, run `cd apps/web && npm run test:e2e`. Th
 - **Worker killed abruptly:** stop all workers; inspect only AEL sandboxes with `docker ps -a --filter label=ael.sandbox=true`. Remove those specific IDs with `docker rm -f <id>`, then restart the worker. Never delete unrelated containers.
 
 Drafts stay in browser localStorage, keyed by full content hash. Clearing browser storage deletes drafts but not permanent submission source in PostgreSQL. Capture important work with Submit or restore it from history. UTC activity dates are labeled in the dashboard; execution timestamps display in browser-local time.
+
+## Isolated browser curriculum verification
+
+The browser suite now exercises all twelve challenges. To avoid writing reference-solution evidence into personal progress, create a temporary local database:
+
+```bash
+.venv/bin/python scripts/e2e_database.py
+```
+
+Source `.cache/e2e.env` separately in three terminals, then start:
+
+```bash
+# Terminal 1, after sourcing the environment
+.venv/bin/uvicorn ael_api.main:create_app --factory --host 127.0.0.1 --port 8001
+# Terminal 2, after sourcing the environment
+.venv/bin/python -m ael_worker
+# Terminal 3, after sourcing the environment
+npm --prefix apps/web run dev -- --port 5175
+```
+
+Run `AEL_WEB_URL=http://127.0.0.1:5175 npm --prefix apps/web run test:e2e`. Stop those three test-service processes, then run `.venv/bin/python scripts/e2e_database.py --cleanup` from a terminal using the personal/default database settings. The helper supports only loopback PostgreSQL, creates a uniquely named database, applies real Alembic migrations, and removes only its recorded temporary database. It never clears personal submissions. Temporary connection settings stay in ignored `.cache/` files.
+
+`AEL_API_TARGET` configures Vite's proxy; its default remains port 8000. Personal services stay on ports 8000/5174/8080. The dedicated browser suite uses 8001/5175. Hosted CI uses an ephemeral PostgreSQL service and may use the default ports directly.

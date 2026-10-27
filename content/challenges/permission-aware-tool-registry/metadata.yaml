@@ -1,0 +1,27 @@
+schema_version: 1
+slug: permission-aware-tool-registry
+version: 1
+title: Expose only tools the caller may use
+difficulty: Intermediate
+track: agentic-ai
+tags:
+- tool permissions
+- authorization
+- approval boundaries
+function_name: list_authorized_tools
+summary: Select eligible tools from explicit registry policy without allowing approval
+  flags or missing metadata to grant authority.
+learning_objectives:
+- Fail closed on incomplete tool policy
+- Keep approvals separate from authorization
+- Prepare safe dispatch boundaries for agents
+constraints:
+- At most 1000 tools; tool names contain at most 64 characters. Full-suite execution
+  is limited to 8 seconds.
+- The registry and approval provenance must come from trusted server policy. This
+  function does not perform side effects; actual dispatch must repeat authorization
+  and validate arguments.
+- Inputs must not be mutated. Invalid request arguments raise ValueError unless explicitly
+  stated otherwise.
+production_relevance: Select eligible tools from explicit registry policy without
+  allowing approval flags or missing metadata to grant authority.

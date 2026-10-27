@@ -1,0 +1,26 @@
+schema_version: 1
+slug: citation-reference-verification
+version: 1
+title: Verify citation references against source text
+difficulty: Advanced
+track: production-rag
+tags:
+- citations
+- grounding
+- source integrity
+function_name: verify_citations
+summary: Reject fabricated source references and quotes while keeping mechanical verification
+  separate from semantic faithfulness.
+learning_objectives:
+- Verify source identity and exact quote provenance
+- Separate mechanical citation validity from semantic truth
+- Define fail-closed behavior for ambiguous sources
+constraints:
+- 'At most 100 claims/sources, 100000 source characters total, 2000 claim/quote characters
+  and 20 citations per claim. Suite budget: 8 seconds.'
+- Only already-authorized sources may be checked. Never treat a mechanically valid
+  reference as proof of claim faithfulness or source authority.
+- Inputs must not be mutated. Invalid request arguments raise ValueError unless explicitly
+  stated otherwise.
+production_relevance: Reject fabricated source references and quotes while keeping
+  mechanical verification separate from semantic faithfulness.

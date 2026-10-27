@@ -1,0 +1,310 @@
+[
+  {
+    "name": "Tables do not merge with text",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "paragraph",
+          "tokens": [
+            "a"
+          ]
+        },
+        {
+          "type": "table",
+          "rows": [
+            [
+              "b"
+            ]
+          ]
+        },
+        {
+          "type": "paragraph",
+          "tokens": [
+            "c"
+          ]
+        }
+      ],
+      "max_tokens": 3
+    },
+    "expected": [
+      {
+        "heading_path": [],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "a"
+            ]
+          }
+        ]
+      },
+      {
+        "heading_path": [],
+        "blocks": [
+          {
+            "type": "table",
+            "rows": [
+              [
+                "b"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "heading_path": [],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "c"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Heading gaps and siblings",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 1,
+          "title": " A "
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "title": "C"
+        },
+        {
+          "type": "paragraph",
+          "tokens": [
+            "x"
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 3,
+          "title": "D"
+        },
+        {
+          "type": "paragraph",
+          "tokens": [
+            "y"
+          ]
+        }
+      ],
+      "max_tokens": 3
+    },
+    "expected": [
+      {
+        "heading_path": [
+          "A",
+          "C"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "x"
+            ]
+          }
+        ]
+      },
+      {
+        "heading_path": [
+          "A",
+          "D"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "y"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Partial paragraph combines with next",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "paragraph",
+          "tokens": [
+            "a",
+            "b",
+            "c",
+            "d"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "tokens": [
+            "e"
+          ]
+        }
+      ],
+      "max_tokens": 3
+    },
+    "expected": [
+      {
+        "heading_path": [],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "a",
+              "b",
+              "c"
+            ]
+          }
+        ]
+      },
+      {
+        "heading_path": [],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "d"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "tokens": [
+              "e"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Empty content skipped",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 1,
+          "title": "A"
+        },
+        {
+          "type": "paragraph",
+          "tokens": []
+        },
+        {
+          "type": "table",
+          "rows": []
+        }
+      ],
+      "max_tokens": 2
+    },
+    "expected": []
+  },
+  {
+    "name": "Empty row invalid",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "table",
+          "rows": [
+            []
+          ]
+        }
+      ],
+      "max_tokens": 2
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Boolean heading level",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "heading",
+          "level": true,
+          "title": "A"
+        }
+      ],
+      "max_tokens": 2
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Blank heading title",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 1,
+          "title": " "
+        }
+      ],
+      "max_tokens": 2
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Unknown block",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "script",
+          "tokens": [
+            "x"
+          ]
+        }
+      ],
+      "max_tokens": 2
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Missing token field",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "paragraph"
+        }
+      ],
+      "max_tokens": 2
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Bad token",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "paragraph",
+          "tokens": [
+            9
+          ]
+        }
+      ],
+      "max_tokens": 2
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Zero budget",
+    "kwargs": {
+      "blocks": [],
+      "max_tokens": 0
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Boolean budget",
+    "kwargs": {
+      "blocks": [],
+      "max_tokens": true
+    },
+    "raises": "ValueError"
+  }
+]

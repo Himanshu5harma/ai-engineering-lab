@@ -1,0 +1,157 @@
+[
+  {
+    "name": "Authorized read tool",
+    "kwargs": {
+      "tools": [
+        {
+          "name": "read_logs",
+          "allowed_tenants": [
+            "acme"
+          ],
+          "required_roles": [
+            "support"
+          ],
+          "risk": "read",
+          "requires_approval": false,
+          "enabled": true
+        }
+      ],
+      "tenant_id": "acme",
+      "roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "approved_tool_ids": {
+        "$set": []
+      }
+    },
+    "expected": [
+      {
+        "name": "read_logs",
+        "risk": "read"
+      }
+    ]
+  },
+  {
+    "name": "Wrong tenant denied",
+    "kwargs": {
+      "tools": [
+        {
+          "name": "read_logs",
+          "allowed_tenants": [
+            "acme"
+          ],
+          "required_roles": [
+            "support"
+          ],
+          "risk": "read",
+          "requires_approval": false,
+          "enabled": true
+        }
+      ],
+      "tenant_id": "other",
+      "roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "approved_tool_ids": {
+        "$set": []
+      }
+    },
+    "expected": []
+  },
+  {
+    "name": "Missing role denied",
+    "kwargs": {
+      "tools": [
+        {
+          "name": "read_logs",
+          "allowed_tenants": [
+            "acme"
+          ],
+          "required_roles": [
+            "support"
+          ],
+          "risk": "read",
+          "requires_approval": false,
+          "enabled": true
+        }
+      ],
+      "tenant_id": "acme",
+      "roles": {
+        "$set": []
+      },
+      "approved_tool_ids": {
+        "$set": []
+      }
+    },
+    "expected": []
+  },
+  {
+    "name": "Write requires approval",
+    "kwargs": {
+      "tools": [
+        {
+          "name": "restart_service",
+          "allowed_tenants": [
+            "acme"
+          ],
+          "required_roles": [
+            "support"
+          ],
+          "risk": "write",
+          "requires_approval": true,
+          "enabled": true
+        }
+      ],
+      "tenant_id": "acme",
+      "roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "approved_tool_ids": {
+        "$set": []
+      }
+    },
+    "expected": []
+  },
+  {
+    "name": "Explicit approved write",
+    "kwargs": {
+      "tools": [
+        {
+          "name": "restart_service",
+          "allowed_tenants": [
+            "acme"
+          ],
+          "required_roles": [
+            "support"
+          ],
+          "risk": "write",
+          "requires_approval": true,
+          "enabled": true
+        }
+      ],
+      "tenant_id": "acme",
+      "roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "approved_tool_ids": {
+        "$set": [
+          "restart_service"
+        ]
+      }
+    },
+    "expected": [
+      {
+        "name": "restart_service",
+        "risk": "write"
+      }
+    ]
+  }
+]

@@ -1,11 +1,13 @@
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
 from typing import Any, Literal
 
 import yaml
 from pydantic import BaseModel, ConfigDict, Field, model_validator
+
+from ael_api.curriculum import load_curriculum
 
 
 class Metadata(BaseModel):
@@ -51,15 +53,28 @@ class ChallengeBundle:
     hidden: list[Case]
     reference: str
     explanation: str
+    curriculum_id: str | None = None
+    learning_order: int | None = None
+    review_guide: str = ""
 
     @property
     def version_id(self) -> str:
         return f"{self.metadata.slug}:{self.digest}"
 
-    def learner(self) -> dict[str, Any]:
+    def summary(self) -> dict[str, Any]:
         return {
             **self.metadata.model_dump(),
             "version_id": self.version_id,
+            "curriculum_id": self.curriculum_id,
+            "learning_order": self.learning_order,
+            "public_count": len(self.public),
+        }
+
+    def learner(self) -> dict[str, Any]:
+        return {
+            **self.summary(),
+            "version_id": self.version_id,
+            "production_review": self.review_guide,
             "problem": self.problem,
             "starter_code": self.starter,
             "hints": self.hints,
@@ -110,4 +125,20 @@ def load_bundles(root: Path) -> dict[str, ChallengeBundle]:
         )
     if not bundles:
         raise ValueError("No challenge packages found")
+    curriculum = load_curriculum(root.parent / "curriculum.json")
+    if curriculum:
+        for module in curriculum.modules:
+            for item in module.entries:
+                if item.slug in bundles:
+                    bundle = bundles[item.slug]
+                    guide = root / item.slug / "production_review.md"
+                    bundles[item.slug] = replace(
+                        bundle,
+                        curriculum_id=item.id,
+                        learning_order=curriculum.first_release.index(item.id) + 1
+                        if item.id in curriculum.first_release
+                        else None,
+                        review_guide=guide.read_text() if guide.is_file() else "",
+                    )
+        bundles = dict(sorted(bundles.items(), key=lambda item: item[1].learning_order or 999))
     return bundles

@@ -1,0 +1,25 @@
+schema_version: 1
+slug: token-window-chunking
+version: 1
+title: Token windows without redundant tails
+difficulty: Intermediate
+track: embeddings-retrieval
+tags:
+- chunking
+- token budgets
+- provenance
+function_name: chunk_tokens
+summary: Split an already-tokenized document into bounded overlapping windows while
+  preserving exact source offsets.
+learning_objectives:
+- Separate model tokenization from window construction
+- Preserve source offsets and bounded windows
+constraints:
+- At most 10000 tokens. The full suite shares an 8-second container budget. Account
+  for overlap-amplified output in your complexity analysis.
+- Tokens are untrusted data, never executable instructions. Provenance offsets must
+  refer to the original immutable tokenization.
+- Inputs must not be mutated. Invalid request arguments raise ValueError unless explicitly
+  stated otherwise.
+production_relevance: Split an already-tokenized document into bounded overlapping
+  windows while preserving exact source offsets.

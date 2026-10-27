@@ -18,7 +18,7 @@ export function ChallengeSearch() {
     enabled: open,
   });
   const items = (catalog.data?.items || []).filter((c) =>
-    `${c.title} ${c.tags.join(" ")}`
+    `${c.curriculum_id || ""} ${c.title} ${c.tags.join(" ")}`
       .toLowerCase()
       .includes(search.toLowerCase()),
   );
@@ -118,7 +118,14 @@ export function ChallengeSearch() {
                   onMouseEnter={() => setSelected(index)}
                 >
                   <div>
-                    <strong>{c.title}</strong>
+                    <strong>
+                      {c.curriculum_id && (
+                        <span className="search-curriculum-code">
+                          {c.curriculum_id}
+                        </span>
+                      )}
+                      {c.title}
+                    </strong>
                     <small>{c.tags.join(" · ")}</small>
                   </div>
                   <ArrowUpRight size={17} />

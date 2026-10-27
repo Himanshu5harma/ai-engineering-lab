@@ -1,0 +1,329 @@
+[
+  {
+    "name": "Whitespace-only quote rejected",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {
+              "source_id": "s1",
+              "quote": "  "
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "s1",
+          "text": "text"
+        }
+      ]
+    },
+    "expected": {
+      "all_references_valid": false,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": false,
+          "errors": [
+            "citation 0: empty_quote"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "NFC equivalence",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {
+              "source_id": "s1",
+              "quote": "café"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "s1",
+          "text": "A café example"
+        }
+      ]
+    },
+    "expected": {
+      "all_references_valid": true,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": true,
+          "errors": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "Case is significant",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {
+              "source_id": "s1",
+              "quote": "Policy"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "s1",
+          "text": "policy"
+        }
+      ]
+    },
+    "expected": {
+      "all_references_valid": false,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": false,
+          "errors": [
+            "citation 0: quote_not_found"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Every citation checked",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {
+              "source_id": "s1",
+              "quote": "text"
+            },
+            {
+              "source_id": "bad",
+              "quote": "x"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "s1",
+          "text": "text"
+        }
+      ]
+    },
+    "expected": {
+      "all_references_valid": false,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": false,
+          "errors": [
+            "citation 1: unknown_source"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Invalid citation shape",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {}
+          ]
+        }
+      ],
+      "sources": []
+    },
+    "expected": {
+      "all_references_valid": false,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": false,
+          "errors": [
+            "citation 0: invalid_citation"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Duplicate source IDs rejected",
+    "kwargs": {
+      "claims": [],
+      "sources": [
+        {
+          "id": "s1",
+          "text": "a"
+        },
+        {
+          "id": "s1",
+          "text": "b"
+        }
+      ]
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Empty claim collection is not verified",
+    "kwargs": {
+      "claims": [],
+      "sources": []
+    },
+    "expected": {
+      "all_references_valid": false,
+      "claims": []
+    }
+  },
+  {
+    "name": "Claim order preserved",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {
+              "source_id": "s1",
+              "quote": "text"
+            }
+          ]
+        },
+        {
+          "text": "Synthetic claim",
+          "citations": []
+        }
+      ],
+      "sources": [
+        {
+          "id": "s1",
+          "text": "text"
+        }
+      ]
+    },
+    "expected": {
+      "all_references_valid": false,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": true,
+          "errors": []
+        },
+        {
+          "index": 1,
+          "references_valid": false,
+          "errors": [
+            "missing_citation"
+          ]
+        }
+      ]
+    }
+  },
+  {
+    "name": "Bad citation-list type",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "claim",
+          "citations": {}
+        }
+      ],
+      "sources": []
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Blank claim rejected",
+    "kwargs": {
+      "claims": [
+        {
+          "text": " ",
+          "citations": []
+        }
+      ],
+      "sources": []
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Integrity is not entailment",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "The opposite policy is true.",
+          "citations": [
+            {
+              "source_id": "s1",
+              "quote": "Do not retry payments."
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "s1",
+          "text": "Do not retry payments."
+        }
+      ]
+    },
+    "expected": {
+      "all_references_valid": true,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": true,
+          "errors": []
+        }
+      ]
+    }
+  },
+  {
+    "name": "Empty source cannot support quote",
+    "kwargs": {
+      "claims": [
+        {
+          "text": "Synthetic claim",
+          "citations": [
+            {
+              "source_id": "s1",
+              "quote": "x"
+            }
+          ]
+        }
+      ],
+      "sources": [
+        {
+          "id": "s1",
+          "text": ""
+        }
+      ]
+    },
+    "expected": {
+      "all_references_valid": false,
+      "claims": [
+        {
+          "index": 0,
+          "references_valid": false,
+          "errors": [
+            "citation 0: quote_not_found"
+          ]
+        }
+      ]
+    }
+  }
+]

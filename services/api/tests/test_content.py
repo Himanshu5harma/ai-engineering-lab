@@ -9,7 +9,7 @@ from ael_worker.judge import equivalent
 
 
 def test_original_packages_are_verified_against_reference(bundles):
-    assert len(bundles) == 2
+    assert len(bundles) == 12
     for slug, bundle in bundles.items():
         # Repository-authored reference code is trusted, never learner source.
         spec = importlib.util.spec_from_file_location(
@@ -25,13 +25,13 @@ def test_original_packages_are_verified_against_reference(bundles):
         codec_spec.loader.exec_module(codec)
         for case in bundle.public + bundle.hidden:
             kwargs = codec.decode_inputs(case.kwargs)
-            original = json.dumps(case.kwargs, sort_keys=True)
+            original = codec.snapshot_inputs(kwargs)
             if case.raises:
                 with pytest.raises(ValueError):
                     function(**kwargs)
             else:
                 assert equivalent(function(**kwargs), case.expected), case.name
-            assert json.dumps(case.kwargs, sort_keys=True) == original
+            assert codec.snapshot_inputs(kwargs) == original
         if slug == "safe-cosine-similarity":
             for bad in (float("inf"), float("nan"), -float("inf")):
                 with pytest.raises(ValueError):

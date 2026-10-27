@@ -1,0 +1,26 @@
+schema_version: 1
+slug: structure-aware-chunking
+version: 1
+title: Chunk documents without breaking their structure
+difficulty: Advanced
+track: embeddings-retrieval
+tags:
+- chunking
+- document structure
+- tables
+function_name: chunk_sections
+summary: Preserve heading paths and table rows while building bounded chunks from
+  parsed document blocks.
+learning_objectives:
+- Preserve document hierarchy
+- Handle tables without splitting rows
+- Separate parsing and chunking contracts
+constraints:
+- At most 500 blocks and 20000 token references; max_tokens is 1–2048. Empty content
+  is allowed. Execution shares an 8-second budget.
+- Parsed text is untrusted data. Do not interpret headings or table content as instructions.
+  Preserve provenance before model context assembly.
+- Inputs must not be mutated. Invalid request arguments raise ValueError unless explicitly
+  stated otherwise.
+production_relevance: Preserve heading paths and table rows while building bounded
+  chunks from parsed document blocks.

@@ -20,7 +20,8 @@ build-backend = "hatchling.build"
 packages = ["services/api/ael_api", "services/worker/ael_worker"]
 
 [tool.pytest.ini_options]
-testpaths = ["services/api/tests", "services/worker/tests"]
+testpaths = ["services/api/tests", "services/worker/tests", "content/challenges"]
+addopts = "--import-mode=importlib"
 markers = ["docker: requires locally built sandbox image and Docker", "postgres: requires PostgreSQL"]
 
 [tool.ruff]

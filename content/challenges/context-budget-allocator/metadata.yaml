@@ -1,0 +1,26 @@
+schema_version: 1
+slug: context-budget-allocator
+version: 1
+title: Allocate evidence inside a context budget
+difficulty: Advanced
+track: production-rag
+tags:
+- context windows
+- token budgets
+- determinism
+function_name: allocate_context
+summary: Choose whole evidence chunks without spending the tokens reserved for instructions,
+  conversation, and generation.
+learning_objectives:
+- Budget prompt and response overhead explicitly
+- Make context selection deterministic
+- Explain greedy-selection trade-offs
+constraints:
+- At most 1000 chunks; context_limit and each token_count are at most 1000000. The
+  suite shares an 8-second budget.
+- Only already-authorized evidence may enter allocation. A token budget is not an
+  authorization filter or an injection defense.
+- Inputs must not be mutated. Invalid request arguments raise ValueError unless explicitly
+  stated otherwise.
+production_relevance: Choose whole evidence chunks without spending the tokens reserved
+  for instructions, conversation, and generation.

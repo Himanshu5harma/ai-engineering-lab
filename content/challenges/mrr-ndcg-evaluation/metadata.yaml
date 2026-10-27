@@ -1,0 +1,26 @@
+schema_version: 1
+slug: mrr-ndcg-evaluation
+version: 1
+title: Evaluate ranked results across queries
+difficulty: Intermediate
+track: rag-evaluation
+tags:
+- ranking evaluation
+- MRR
+- nDCG
+function_name: ranking_metrics
+summary: Calculate true mean reciprocal rank and graded nDCG across a reproducible
+  query set.
+learning_objectives:
+- Distinguish reciprocal rank from mean reciprocal rank
+- Implement graded nDCG
+- Preserve query-level evidence for regression analysis
+constraints:
+- 1–100 queries, at most 1000 retrieved IDs and relevance labels per query; k is 1–1000.
+  The suite shares an 8-second container budget.
+- Metrics only reflect the supplied authorized labels and candidates. Security regressions
+  must be gated independently of aggregate retrieval scores.
+- Inputs must not be mutated. Invalid request arguments raise ValueError unless explicitly
+  stated otherwise.
+production_relevance: Calculate true mean reciprocal rank and graded nDCG across a
+  reproducible query set.

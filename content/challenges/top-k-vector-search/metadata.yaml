@@ -1,0 +1,24 @@
+schema_version: 1
+slug: top-k-vector-search
+version: 1
+title: Top-K vector search with stable ties
+difficulty: Intermediate
+track: embeddings-retrieval
+tags:
+- vector search
+- ranking
+- determinism
+function_name: top_k_similar
+summary: Rank candidate embeddings with stable cosine scores and reproducible tie-breaking.
+learning_objectives:
+- Establish an exact-search baseline
+- Make retrieval ordering reproducible
+constraints:
+- 1–2048 dimensions, at most 1000 candidates, and n×d ≤ 100000. k is 0–1000. The full
+  suite shares an 8-second container budget.
+- Treat embedding metadata as untrusted. This function ranks already-authorized candidates;
+  it does not enforce tenant authorization.
+- Inputs must not be mutated. Invalid request arguments raise ValueError unless explicitly
+  stated otherwise.
+production_relevance: Rank candidate embeddings with stable cosine scores and reproducible
+  tie-breaking.

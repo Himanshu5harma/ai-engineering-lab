@@ -1,0 +1,180 @@
+[
+  {
+    "name": "Matching evidence accepted",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": [
+      {
+        "id": "policy-1",
+        "tenant_id": "acme",
+        "product": "router",
+        "min_version": "5.2",
+        "max_version": "6.0",
+        "roles": [
+          "support"
+        ],
+        "valid_from": "2026-01-01",
+        "valid_until": "2027-01-01",
+        "text": "Synthetic support policy"
+      }
+    ]
+  },
+  {
+    "name": "Wrong tenant rejected",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "other",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Expired evidence rejected",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2026-10-26",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Unauthorized role rejected",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "finance"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Numeric version semantics",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "5.11",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": [
+      {
+        "id": "policy-1",
+        "tenant_id": "acme",
+        "product": "router",
+        "min_version": "5.2",
+        "max_version": "5.11",
+        "roles": [
+          "support"
+        ],
+        "valid_from": "2026-01-01",
+        "valid_until": "2027-01-01",
+        "text": "Synthetic support policy"
+      }
+    ]
+  }
+]

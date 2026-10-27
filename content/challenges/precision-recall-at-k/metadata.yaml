@@ -1,0 +1,26 @@
+schema_version: 1
+slug: precision-recall-at-k
+version: 1
+title: Measure retrieval without counting duplicates twice
+difficulty: Intermediate
+track: rag-evaluation
+tags:
+- retrieval evaluation
+- precision
+- recall
+function_name: precision_recall_at_k
+summary: Measure the quality of a fixed retrieval cutoff against a declared set of
+  relevant document IDs.
+learning_objectives:
+- Define evaluation denominators explicitly
+- Prevent duplicate-result metric inflation
+- Separate retrieval quality from answer correctness
+constraints:
+- Each list contains at most 10000 IDs; k is 1–1000. Full-suite execution is limited
+  to 8 seconds.
+- Use synthetic or authorized evaluation datasets. Aggregate metrics must not conceal
+  cross-tenant retrieval or missing security slices.
+- Inputs must not be mutated. Invalid request arguments raise ValueError unless explicitly
+  stated otherwise.
+production_relevance: Measure the quality of a fixed retrieval cutoff against a declared
+  set of relevant document IDs.

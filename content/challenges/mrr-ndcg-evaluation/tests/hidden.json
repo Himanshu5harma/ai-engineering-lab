@@ -1,0 +1,284 @@
+[
+  {
+    "name": "Duplicate gain is zero",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a",
+            "a",
+            "b"
+          ],
+          "relevance": {
+            "a": 3,
+            "b": 1
+          }
+        }
+      ],
+      "k": 3
+    },
+    "expected": {
+      "mrr": 1.0,
+      "ndcg": 0.9828422279067397,
+      "per_query": [
+        {
+          "reciprocal_rank": 1,
+          "ndcg": 0.9828422279067397
+        }
+      ]
+    }
+  },
+  {
+    "name": "Cutoff removes later hit",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "x",
+            "a"
+          ],
+          "relevance": {
+            "a": 1
+          }
+        }
+      ],
+      "k": 1
+    },
+    "expected": {
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "per_query": [
+        {
+          "reciprocal_rank": 0,
+          "ndcg": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "Ideal ordering uses graded labels",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "b"
+          ],
+          "relevance": {
+            "a": 3,
+            "b": 2
+          }
+        }
+      ],
+      "k": 1
+    },
+    "expected": {
+      "mrr": 1.0,
+      "ndcg": 0.42857142857142855,
+      "per_query": [
+        {
+          "reciprocal_rank": 1,
+          "ndcg": 0.42857142857142855
+        }
+      ]
+    }
+  },
+  {
+    "name": "Empty retrieval contributes zero",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [],
+          "relevance": {
+            "a": 1
+          }
+        }
+      ],
+      "k": 2
+    },
+    "expected": {
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "per_query": [
+        {
+          "reciprocal_rank": 0,
+          "ndcg": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "Zero grade is not relevant",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a"
+          ],
+          "relevance": {
+            "a": 0
+          }
+        }
+      ],
+      "k": 1
+    },
+    "expected": {
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "per_query": [
+        {
+          "reciprocal_rank": 0,
+          "ndcg": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "Boolean grade invalid",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a"
+          ],
+          "relevance": {
+            "a": true
+          }
+        }
+      ],
+      "k": 1
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Fractional grade invalid",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a"
+          ],
+          "relevance": {
+            "a": 1.5
+          }
+        }
+      ],
+      "k": 1
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Negative grade invalid",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a"
+          ],
+          "relevance": {
+            "a": -1
+          }
+        }
+      ],
+      "k": 1
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Grade ceiling",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a"
+          ],
+          "relevance": {
+            "a": 6
+          }
+        }
+      ],
+      "k": 1
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Bad ID below cutoff",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a",
+            null
+          ],
+          "relevance": {
+            "a": 1
+          }
+        }
+      ],
+      "k": 1
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Boolean cutoff",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [],
+          "relevance": {}
+        }
+      ],
+      "k": true
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Missing labels",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a"
+          ]
+        }
+      ],
+      "k": 1
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Unjudged queries remain in mean",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a"
+          ],
+          "relevance": {
+            "a": 1
+          }
+        },
+        {
+          "retrieved": [
+            "x"
+          ],
+          "relevance": {}
+        }
+      ],
+      "k": 1
+    },
+    "expected": {
+      "mrr": 0.5,
+      "ndcg": 0.5,
+      "per_query": [
+        {
+          "reciprocal_rank": 1,
+          "ndcg": 1
+        },
+        {
+          "reciprocal_rank": 0,
+          "ndcg": 0
+        }
+      ]
+    }
+  }
+]

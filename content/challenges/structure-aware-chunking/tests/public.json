@@ -1,0 +1,264 @@
+[
+  {
+    "name": "Pack paragraphs in one section",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 1,
+          "title": "Setup"
+        },
+        {
+          "type": "paragraph",
+          "tokens": [
+            "one",
+            "two"
+          ]
+        },
+        {
+          "type": "paragraph",
+          "tokens": [
+            "three"
+          ]
+        }
+      ],
+      "max_tokens": 3
+    },
+    "expected": [
+      {
+        "heading_path": [
+          "Setup"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "one",
+              "two"
+            ]
+          },
+          {
+            "type": "paragraph",
+            "tokens": [
+              "three"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Heading change flushes content",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "heading",
+          "level": 1,
+          "title": "A"
+        },
+        {
+          "type": "paragraph",
+          "tokens": [
+            "x"
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 2,
+          "title": "B"
+        },
+        {
+          "type": "paragraph",
+          "tokens": [
+            "y"
+          ]
+        },
+        {
+          "type": "heading",
+          "level": 1,
+          "title": "C"
+        },
+        {
+          "type": "paragraph",
+          "tokens": [
+            "z"
+          ]
+        }
+      ],
+      "max_tokens": 5
+    },
+    "expected": [
+      {
+        "heading_path": [
+          "A"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "x"
+            ]
+          }
+        ]
+      },
+      {
+        "heading_path": [
+          "A",
+          "B"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "y"
+            ]
+          }
+        ]
+      },
+      {
+        "heading_path": [
+          "C"
+        ],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "z"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Table row grouping",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "table",
+          "rows": [
+            [
+              "a",
+              "b"
+            ],
+            [
+              "c"
+            ],
+            [
+              "d",
+              "e"
+            ]
+          ]
+        }
+      ],
+      "max_tokens": 3
+    },
+    "expected": [
+      {
+        "heading_path": [],
+        "blocks": [
+          {
+            "type": "table",
+            "rows": [
+              [
+                "a",
+                "b"
+              ],
+              [
+                "c"
+              ]
+            ]
+          }
+        ]
+      },
+      {
+        "heading_path": [],
+        "blocks": [
+          {
+            "type": "table",
+            "rows": [
+              [
+                "d",
+                "e"
+              ]
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Oversized paragraph",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "paragraph",
+          "tokens": [
+            "a",
+            "b",
+            "c",
+            "d",
+            "e"
+          ]
+        }
+      ],
+      "max_tokens": 2
+    },
+    "expected": [
+      {
+        "heading_path": [],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "a",
+              "b"
+            ]
+          }
+        ]
+      },
+      {
+        "heading_path": [],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "c",
+              "d"
+            ]
+          }
+        ]
+      },
+      {
+        "heading_path": [],
+        "blocks": [
+          {
+            "type": "paragraph",
+            "tokens": [
+              "e"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Oversized row fails",
+    "kwargs": {
+      "blocks": [
+        {
+          "type": "table",
+          "rows": [
+            [
+              "a",
+              "b",
+              "c"
+            ]
+          ]
+        }
+      ],
+      "max_tokens": 2
+    },
+    "raises": "ValueError"
+  }
+]

@@ -1,0 +1,133 @@
+[
+  {
+    "name": "Perfect ranking",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a",
+            "b",
+            "c"
+          ],
+          "relevance": {
+            "a": 3,
+            "b": 2,
+            "c": 1
+          }
+        }
+      ],
+      "k": 3
+    },
+    "expected": {
+      "mrr": 1.0,
+      "ndcg": 1.0,
+      "per_query": [
+        {
+          "reciprocal_rank": 1,
+          "ndcg": 1
+        }
+      ]
+    }
+  },
+  {
+    "name": "Average across queries",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a"
+          ],
+          "relevance": {
+            "a": 1
+          }
+        },
+        {
+          "retrieved": [
+            "x",
+            "a"
+          ],
+          "relevance": {
+            "a": 1
+          }
+        }
+      ],
+      "k": 2
+    },
+    "expected": {
+      "mrr": 0.75,
+      "ndcg": 0.8154648767857288,
+      "per_query": [
+        {
+          "reciprocal_rank": 1,
+          "ndcg": 1
+        },
+        {
+          "reciprocal_rank": 0.5,
+          "ndcg": 0.6309297535714575
+        }
+      ]
+    }
+  },
+  {
+    "name": "Graded ranking differs from binary",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "b",
+            "a",
+            "x"
+          ],
+          "relevance": {
+            "a": 3,
+            "b": 2,
+            "c": 1
+          }
+        }
+      ],
+      "k": 3
+    },
+    "expected": {
+      "mrr": 1.0,
+      "ndcg": 0.7895959410076381,
+      "per_query": [
+        {
+          "reciprocal_rank": 1,
+          "ndcg": 0.7895959410076381
+        }
+      ]
+    }
+  },
+  {
+    "name": "No relevant labels",
+    "kwargs": {
+      "queries": [
+        {
+          "retrieved": [
+            "a"
+          ],
+          "relevance": {}
+        }
+      ],
+      "k": 2
+    },
+    "expected": {
+      "mrr": 0.0,
+      "ndcg": 0.0,
+      "per_query": [
+        {
+          "reciprocal_rank": 0,
+          "ndcg": 0
+        }
+      ]
+    }
+  },
+  {
+    "name": "Empty evaluation rejected",
+    "kwargs": {
+      "queries": [],
+      "k": 3
+    },
+    "raises": "ValueError"
+  }
+]

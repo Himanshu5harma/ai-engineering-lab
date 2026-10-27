@@ -87,6 +87,6 @@ def test_real_postgres_submission_lifecycle(pg_sessions, bundles):
                 assert worker.process_one()
                 result = client.get(f"/api/v1/submissions/{response.json()['id']}").json()
                 assert result["status"] == expected, result
-        assert len(client.get("/api/v1/progress").json()["solved_slugs"]) == 2
+        assert len(client.get("/api/v1/progress").json()["solved_slugs"]) == len(bundles)
     with pg_sessions() as session:
-        assert len(session.scalars(select(Submission)).all()) == 4
+        assert len(session.scalars(select(Submission)).all()) == 2 * len(bundles)

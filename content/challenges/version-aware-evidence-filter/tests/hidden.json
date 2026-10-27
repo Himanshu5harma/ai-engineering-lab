@@ -1,0 +1,629 @@
+[
+  {
+    "name": "Missing permissions fail closed",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Empty permissions fail closed",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Missing expiry differs from null",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Explicit unbounded dates and version",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": null,
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": null,
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": [
+      {
+        "id": "policy-1",
+        "tenant_id": "acme",
+        "product": "router",
+        "min_version": "5.2",
+        "max_version": null,
+        "roles": [
+          "support"
+        ],
+        "valid_from": "2026-01-01",
+        "valid_until": null,
+        "text": "Synthetic support policy"
+      }
+    ]
+  },
+  {
+    "name": "Upper version boundary excluded",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "6.0",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Trailing-zero version equivalent",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.2.0",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": [
+      {
+        "id": "policy-1",
+        "tenant_id": "acme",
+        "product": "router",
+        "min_version": "5.2",
+        "max_version": "6.0",
+        "roles": [
+          "support"
+        ],
+        "valid_from": "2026-01-01",
+        "valid_until": "2027-01-01",
+        "text": "Synthetic support policy"
+      }
+    ]
+  },
+  {
+    "name": "Future validity rejected",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-10-27",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Stable candidate ordering",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "z",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        },
+        {
+          "id": "policy-1",
+          "tenant_id": "other",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        },
+        {
+          "id": "a",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": [
+      {
+        "id": "z",
+        "tenant_id": "acme",
+        "product": "router",
+        "min_version": "5.2",
+        "max_version": "6.0",
+        "roles": [
+          "support"
+        ],
+        "valid_from": "2026-01-01",
+        "valid_until": "2027-01-01",
+        "text": "Synthetic support policy"
+      },
+      {
+        "id": "a",
+        "tenant_id": "acme",
+        "product": "router",
+        "min_version": "5.2",
+        "max_version": "6.0",
+        "roles": [
+          "support"
+        ],
+        "valid_from": "2026-01-01",
+        "valid_until": "2027-01-01",
+        "text": "Synthetic support policy"
+      }
+    ]
+  },
+  {
+    "name": "Malformed dates fail closed",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-02-30",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Malformed document version rejected",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.beta",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Empty request roles deny all",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": []
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Invalid request date",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "20261026"
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Invalid request version",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.2-rc1",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "List is not a role set",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": [
+        "support"
+      ],
+      "as_of": "2026-10-26"
+    },
+    "raises": "ValueError"
+  },
+  {
+    "name": "Wrong product rejected",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "switch",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Malformed candidate skipped",
+    "kwargs": {
+      "chunks": [
+        null,
+        {},
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": [
+      {
+        "id": "policy-1",
+        "tenant_id": "acme",
+        "product": "router",
+        "min_version": "5.2",
+        "max_version": "6.0",
+        "roles": [
+          "support"
+        ],
+        "valid_from": "2026-01-01",
+        "valid_until": "2027-01-01",
+        "text": "Synthetic support policy"
+      }
+    ]
+  },
+  {
+    "name": "No admin bypass",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "6.0",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "admin"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  },
+  {
+    "name": "Invalid empty version range",
+    "kwargs": {
+      "chunks": [
+        {
+          "id": "policy-1",
+          "tenant_id": "acme",
+          "product": "router",
+          "min_version": "5.2",
+          "max_version": "5.2",
+          "roles": [
+            "support"
+          ],
+          "valid_from": "2026-01-01",
+          "valid_until": "2027-01-01",
+          "text": "Synthetic support policy"
+        }
+      ],
+      "tenant_id": "acme",
+      "product": "router",
+      "version": "5.10",
+      "allowed_roles": {
+        "$set": [
+          "support"
+        ]
+      },
+      "as_of": "2026-10-26"
+    },
+    "expected": []
+  }
+]

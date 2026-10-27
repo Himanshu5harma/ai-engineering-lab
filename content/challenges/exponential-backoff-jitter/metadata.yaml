@@ -1,0 +1,26 @@
+schema_version: 1
+slug: exponential-backoff-jitter
+version: 1
+title: Plan bounded retries with deterministic jitter
+difficulty: Intermediate
+track: python-fastapi
+tags:
+- retries
+- resilience
+- deterministic testing
+function_name: backoff_delays
+summary: Build a reproducible exponential-backoff schedule without sleeping, contacting
+  a provider, or using global randomness.
+learning_objectives:
+- Separate retry scheduling from execution
+- Inject randomness for deterministic verification
+- Respect bounded latency and idempotency concerns
+constraints:
+- 0–30 retries, finite numeric parameters, exactly one injected sample per retry.
+  The full suite shares an 8-second budget.
+- Retries must not repeat sensitive side effects without idempotency and authorization
+  checks. A correct delay schedule alone does not make an unsafe operation retryable.
+- Inputs must not be mutated. Invalid request arguments raise ValueError unless explicitly
+  stated otherwise.
+production_relevance: Build a reproducible exponential-backoff schedule without sleeping,
+  contacting a provider, or using global randomness.

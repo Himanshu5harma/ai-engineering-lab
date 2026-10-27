@@ -1,0 +1,136 @@
+[
+  {
+    "name": "Top match",
+    "kwargs": {
+      "query": [
+        1,
+        0
+      ],
+      "candidates": [
+        {
+          "id": "b",
+          "vector": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "a",
+          "vector": [
+            1,
+            0
+          ]
+        }
+      ],
+      "k": 1
+    },
+    "expected": [
+      {
+        "id": "a",
+        "score": 1.0
+      }
+    ]
+  },
+  {
+    "name": "Exact ties use document ID",
+    "kwargs": {
+      "query": [
+        1,
+        0
+      ],
+      "candidates": [
+        {
+          "id": "z",
+          "vector": [
+            2,
+            0
+          ]
+        },
+        {
+          "id": "a",
+          "vector": [
+            1,
+            0
+          ]
+        }
+      ],
+      "k": 2
+    },
+    "expected": [
+      {
+        "id": "a",
+        "score": 1.0
+      },
+      {
+        "id": "z",
+        "score": 1.0
+      }
+    ]
+  },
+  {
+    "name": "No candidates",
+    "kwargs": {
+      "query": [
+        1
+      ],
+      "candidates": [],
+      "k": 3
+    },
+    "expected": []
+  },
+  {
+    "name": "Zero query",
+    "kwargs": {
+      "query": [
+        0,
+        0
+      ],
+      "candidates": [
+        {
+          "id": "b",
+          "vector": [
+            0,
+            1
+          ]
+        },
+        {
+          "id": "a",
+          "vector": [
+            1,
+            0
+          ]
+        }
+      ],
+      "k": 5
+    },
+    "expected": [
+      {
+        "id": "a",
+        "score": 0.0
+      },
+      {
+        "id": "b",
+        "score": 0.0
+      }
+    ]
+  },
+  {
+    "name": "Dimension mismatch",
+    "kwargs": {
+      "query": [
+        1
+      ],
+      "candidates": [
+        {
+          "id": "a",
+          "vector": [
+            1,
+            0
+          ]
+        }
+      ],
+      "k": 1
+    },
+    "raises": "ValueError"
+  }
+]

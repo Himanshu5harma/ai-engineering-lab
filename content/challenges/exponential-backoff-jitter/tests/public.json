@@ -1,0 +1,85 @@
+[
+  {
+    "name": "Exponential schedule caps",
+    "kwargs": {
+      "attempts": 4,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": [
+        0.5,
+        0.5,
+        0.5,
+        0.5
+      ]
+    },
+    "expected": [
+      1,
+      2,
+      4,
+      5
+    ]
+  },
+  {
+    "name": "Full jitter",
+    "kwargs": {
+      "attempts": 4,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 1,
+      "random_values": [
+        0,
+        0.5,
+        1,
+        0.2
+      ]
+    },
+    "expected": [
+      0,
+      1,
+      4,
+      1
+    ]
+  },
+  {
+    "name": "Partial jitter",
+    "kwargs": {
+      "attempts": 2,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 0.5,
+      "random_values": [
+        0,
+        1
+      ]
+    },
+    "expected": [
+      0.5,
+      2
+    ]
+  },
+  {
+    "name": "No retries",
+    "kwargs": {
+      "attempts": 0,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": []
+    },
+    "expected": []
+  },
+  {
+    "name": "Wrong sample count",
+    "kwargs": {
+      "attempts": 4,
+      "base_delay": 1,
+      "max_delay": 5,
+      "jitter": 0,
+      "random_values": [
+        0.5
+      ]
+    },
+    "raises": "ValueError"
+  }
+]

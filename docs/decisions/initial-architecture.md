@@ -9,3 +9,12 @@
 7. **Practical UI dependencies.** React Router and TanStack Query manage navigation and polling. Monaco is loaded on demand with locally bundled workers. Plain CSS keeps a small design system without another framework. React Flow belongs to the later system design phase.
 8. **Honest evidence.** Public success never awards completion. Dashboard values come from stored executions. Mastery, revision scheduling, AI feedback, and later modules are deferred rather than represented by invented data.
 9. **Testing layers.** Fast isolated tests use SQLite and a test-only predetermined runner. PostgreSQL tests prove real locking/persistence. Docker tests prove container execution and configured controls. Browser E2E uses all real services. Only the latter layers support end-to-end execution claims.
+
+## Curriculum milestone additions
+
+- A validated 88-entry manifest supplies stable curriculum IDs, exact first-release ordering and explicit ready/planned counts. It contains metadata for future exercises, not placeholder runnable problems.
+- The original grading hash remains authoritative for submissions. Curriculum metadata and manual-review prompts are separate from that hash, preserving existing cosine/RRF evidence while adding the learning sequence.
+- Native set fixtures use a declarative `$set` data marker; the sandbox bridge decodes it and snapshots sets deterministically. Learner output still must be JSON and is graded outside the container.
+- Public/private pytest wrappers verify only trusted repository reference code on the host. All learner and deliberately buggy implementations run only through the Docker adapter.
+- `ChallengeReview` stores manual engineering tasks and notes by grading version. A review cannot award automated coding credit. UI labels distinguish code verification from learner self-review and avoid claiming mastery.
+- Browser acceptance can run against a temporary loopback database to keep automated reference-solution evidence out of personal progress.
