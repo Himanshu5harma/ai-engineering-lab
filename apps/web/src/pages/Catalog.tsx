@@ -1,3 +1,5 @@
+import { Input, Select } from "../components/ui/primitives";
+import { Button } from "../components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowUpRight,
@@ -158,14 +160,14 @@ export function Catalog() {
           <div className="filter-bar">
             <label className="search-input">
               <Search size={17} />
-              <input
+              <Input
                 aria-label="Search challenges"
                 value={search}
                 onChange={(e) => filter("q", e.target.value)}
                 placeholder="Search problems or skills…"
               />
             </label>
-            <select
+            <Select
               aria-label="Filter by difficulty"
               value={difficulty}
               onChange={(e) => filter("difficulty", e.target.value)}
@@ -173,15 +175,15 @@ export function Catalog() {
               {["All difficulties", ...rank].map((d) => (
                 <option key={d}>{d}</option>
               ))}
-            </select>
-            <select
+            </Select>
+            <Select
               aria-label="Sort challenges"
               value={sort}
               onChange={(e) => filter("sort", e.target.value)}
             >
               <option value="recommended">Recommended</option>
               <option value="title">Title A–Z</option>
-            </select>
+            </Select>
           </div>
           <div className="catalog-results-heading">
             <span>
@@ -272,9 +274,7 @@ export function Catalog() {
                   ? "Use the bookmark on a challenge to save it in this browser."
                   : "Try a different topic or reset your filters."}
               </p>
-              <button className="button" onClick={() => setParams({})}>
-                View all challenges
-              </button>
+              <Button onClick={() => setParams({})}>View all challenges</Button>
             </div>
           )}
           <div className="catalog-footer">

@@ -18,3 +18,23 @@
 - Public/private pytest wrappers verify only trusted repository reference code on the host. All learner and deliberately buggy implementations run only through the Docker adapter.
 - `ChallengeReview` stores manual engineering tasks and notes by grading version. A review cannot award automated coding credit. UI labels distinguish code verification from learner self-review and avoid claiming mastery.
 - Browser acceptance can run against a temporary loopback database to keep automated reference-solution evidence out of personal progress.
+
+## System Design Studio additions
+
+- [React Flow](https://reactflow.dev/examples/interaction/save-and-restore) is loaded only on a design detail route. The app stores a small typed graph rather than persisting library internals. A connection form and coordinate inputs complement direct canvas gestures.
+- Authored design content is validated and hashed independently of coding packages. Five deliverables are required for review readiness; matching form structure is not evidence that an architecture is sound. Rubric ratings remain learner assertions.
+- PostgreSQL stores the graph, writing and ratings as one versioned document. Atomic revision checks protect both first-save races and concurrent edits. HTTP 409 preserves the winning row; the UI retains local work and offers export before reloading. No last-write-wins update is used.
+- Browser localStorage supplies an optional recovery copy for unsaved work. PostgreSQL is the durable save destination. Draft status is restored on edits saved after review readiness, avoiding stale completeness claims.
+- SVG export constructs escaped XML text without embedded HTML or scripts. Markdown and JSON export the full reasoning and graph. Public multi-user collaboration, JSON import, architecture auto-grading and AI review remain outside this release.
+
+## Coding workbench additions
+
+- Python formatting and advisory linting use the pinned [official Ruff WASM package](https://github.com/astral-sh/ruff/tree/0.16.8/crates/ruff_wasm) in a browser worker. Source is parsed as data; it is never executed for formatting. The API, judge and sandbox do not gain a new formatting or execution path.
+- A formatting request is tied to a model version. Later edits invalidate its result. Successful edits preserve undo history; a syntax, load or timeout failure leaves the source unchanged. Live diagnostics similarly reject stale results.
+- Fullscreen and focus are separate choices. An expanded workspace remains usable when native fullscreen is denied. Keyboard-operable dividers and explicit mobile panes complement direct dragging. Browser-local display preferences never alter grading or persisted submission identities.
+
+## Editor simplification
+
+- The editor uses one compact file row with font size, Format and Reset. It inherits the app theme; code drafts keep their original keys. Older preferences migrate to font size only.
+- Removed comparison, live diagnostics, completion snippets, extra toolbar actions, preferences/help dialogs and the redundant statusbar. Undo/redo, find/replace and formatting retain keyboard access. Run, Submit, history, results and workspace sizing remain available.
+- The formatter worker and WASM load only when formatting is requested. There is no background analysis during typing. Formatting still protects newer edits, preserves undo and leaves invalid source unchanged.

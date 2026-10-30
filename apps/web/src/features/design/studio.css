@@ -1,0 +1,612 @@
+/* Design Studio owns its viewport; instructions, writing and inspector scroll independently. */
+.design-studio {
+  height: calc(100dvh - var(--shell-header-height, 68px));
+  min-height: 480px;
+  max-width: 1600px;
+  margin: 0 auto;
+  padding: 14px var(--page-gutter) 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  overflow: hidden;
+}
+.design-studio-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-shrink: 0;
+}
+.design-identity {
+  min-width: 0;
+}
+.design-identity .back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 11px;
+  margin: 0 0 8px;
+}
+.design-identity h1 {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 19px;
+  line-height: 1.45;
+  font-weight: 600;
+  letter-spacing: -0.45px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+.design-save-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  flex-shrink: 0;
+}
+.design-save-actions > span {
+  font-size: 11px;
+  color: var(--muted);
+  max-width: 140px;
+  line-height: 1.5;
+}
+.design-workspace-layout {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 14px;
+  flex: 1;
+  min-height: 0;
+}
+.brief-open .design-workspace-layout {
+  grid-template-columns: 265px minmax(0, 1fr);
+}
+.design-brief,
+.design-work-area {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  min-height: 0;
+  min-width: 0;
+  overflow: hidden;
+}
+.design-brief[hidden] {
+  display: none;
+}
+.design-brief > div {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+.design-work-area,
+.design-tab-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.design-tab-panel {
+  flex: 1;
+}
+.design-tab-panel[hidden] {
+  display: none;
+}
+.design-brief-tabs,
+.design-deliverable-tabs {
+  min-height: 42px;
+  padding: 0 8px;
+}
+.design-brief-tabs .ui-tabs-trigger {
+  padding: 10px 7px;
+  font-size: 11px;
+  text-transform: capitalize;
+}
+.brief-tab-panel {
+  overflow: auto;
+  flex: 1;
+}
+.design-brief-content {
+  padding: 20px;
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.design-brief-content h3 {
+  color: var(--text);
+  font-size: 13px;
+  margin: 20px 0 10px;
+}
+.design-brief-content li {
+  padding: 0 0 12px 2px;
+}
+.design-brief-content ol,
+.design-brief-content ul {
+  padding-left: 18px;
+}
+.design-brief-content .text-link {
+  text-align: left;
+  line-height: 1.7;
+}
+.design-prompt {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--line);
+  flex-shrink: 0;
+}
+.design-prompt h2 {
+  font-size: 13px;
+  margin: 0 0 5px;
+}
+.design-prompt p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.6;
+  margin: 0;
+  max-height: 54px;
+  overflow: auto;
+}
+.architecture-builder {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+.component-palette {
+  display: flex;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+  flex-shrink: 0;
+}
+.component-palette > span {
+  display: flex;
+  align-items: center;
+  font-size: 10px;
+  color: var(--muted);
+  white-space: nowrap;
+  margin-right: 4px;
+}
+.component-palette button {
+  border: 1px solid var(--line);
+  border-radius: 5px;
+  padding: 5px 8px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  white-space: nowrap;
+  font-size: 11px;
+  background: var(--panel);
+}
+.component-palette button:hover {
+  background: var(--accent-soft);
+  color: var(--accent);
+}
+.canvas-with-inspector {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 220px;
+  flex: 1;
+  min-height: 0;
+}
+.architecture-canvas {
+  position: relative;
+  min-height: 200px;
+  height: 100%;
+  background: var(--bg);
+  overflow: hidden;
+}
+.architecture-canvas .react-flow {
+  --xy-background-color: var(--bg);
+  --xy-controls-button-background-color: var(--panel);
+  --xy-controls-button-color: var(--text);
+  --xy-controls-button-background-color-hover: var(--panel-hover);
+  --xy-minimap-background-color: var(--panel);
+  --xy-edge-stroke-default: var(--muted);
+  --xy-edge-label-background-color-default: var(--panel);
+  --xy-edge-label-color-default: var(--text);
+}
+.architecture-canvas .react-flow__minimap {
+  width: 100px;
+  height: 65px;
+}
+.architecture-canvas .react-flow__attribution {
+  font-size: 8px;
+  background: var(--panel);
+  color: var(--muted);
+}
+.architecture-node {
+  width: 200px;
+  padding: 12px 14px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  font-size: 12px;
+  box-shadow: 0 1px 3px #0001;
+}
+.architecture-node.node-selected {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+.architecture-node > div {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-transform: capitalize;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+.architecture-node strong {
+  display: block;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
+.architecture-node small {
+  display: block;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  line-height: 1.6;
+  font-size: 10px;
+  margin-top: 6px;
+}
+.architecture-node .react-flow__handle {
+  background: var(--accent);
+  width: 7px;
+  height: 7px;
+  border: 2px solid var(--panel);
+}
+.canvas-empty {
+  pointer-events: none;
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 24px;
+  color: var(--muted);
+}
+.canvas-empty h3 {
+  color: var(--text);
+  font-size: 15px;
+  margin: 14px 0 6px;
+}
+.canvas-empty p {
+  font-size: 12px;
+  margin: 0;
+}
+.component-inspector {
+  overflow: auto;
+  padding: 16px;
+  border-left: 1px solid var(--line);
+  background: var(--panel);
+  font-size: 12px;
+}
+.component-inspector h3 {
+  margin: 16px 0 8px;
+  font-size: 13px;
+}
+.component-inspector p {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.component-inspector label,
+.connection-form label {
+  display: block;
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--muted);
+  margin: 12px 0;
+  min-width: 0;
+}
+.component-inspector .ui-input,
+.component-inspector .ui-textarea {
+  margin-top: 6px;
+  font-size: 12px;
+  min-width: 0;
+}
+.component-inspector .ui-button {
+  font-size: 11px;
+  padding: 7px 9px;
+  min-height: 32px;
+}
+.node-coordinates {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+.connection-form {
+  flex-shrink: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr auto;
+  align-items: end;
+  gap: 8px;
+  padding: 9px 12px;
+  border-top: 1px solid var(--line);
+}
+.connection-form label {
+  margin: 0;
+}
+.connection-form .ui-input {
+  margin-top: 4px;
+  font-size: 11px;
+  padding: 6px 8px;
+  min-width: 0;
+  min-height: 32px;
+}
+.connection-form .ui-button {
+  font-size: 11px;
+  min-height: 32px;
+}
+.canvas-footer {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-size: 10px;
+  color: var(--muted);
+  padding: 0 12px 8px;
+  flex-shrink: 0;
+}
+.design-writing {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 16px;
+  gap: 10px;
+}
+.design-writing label {
+  font-size: 12px;
+  font-weight: 550;
+}
+.design-writing .ui-textarea {
+  flex: 1;
+  resize: none;
+  min-height: 160px;
+  line-height: 1.8;
+  padding: 16px;
+  background: var(--bg);
+}
+.design-writing > span {
+  font-size: 10px;
+  color: var(--muted);
+  text-align: right;
+}
+.design-review {
+  overflow: auto;
+  padding: 22px;
+}
+.design-review > h2 {
+  font-size: 20px;
+  margin: 12px 0;
+}
+.design-review > p,
+.design-evidence-note {
+  font-size: 12px;
+  color: var(--muted);
+}
+.design-checklist {
+  display: grid;
+  gap: 6px;
+  margin: 20px 0 14px;
+}
+.design-checklist button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  padding: 10px 12px;
+  font-size: 12px;
+}
+.design-checklist small {
+  margin-left: auto;
+}
+.design-rubric-item {
+  padding: 18px 0;
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  border-top: 1px solid var(--line);
+}
+.design-rubric-item h3 {
+  font-size: 13px;
+  margin: 0 0 8px;
+}
+.design-rubric-item p {
+  font-size: 12px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+.design-rubric-item small {
+  font-size: 11px;
+  line-height: 1.6;
+}
+.design-rubric-item label {
+  display: grid;
+  align-content: start;
+  gap: 7px;
+  min-width: 160px;
+  font-size: 11px;
+}
+.design-follow-ups {
+  padding-left: 20px;
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.9;
+}
+.design-workspace-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.design-workspace-footer > span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 11px;
+  color: var(--muted);
+}
+.design-workspace-footer > div {
+  display: flex;
+  gap: 6px;
+}
+.design-workspace-footer .ui-button {
+  min-height: 32px;
+  font-size: 11px;
+  padding: 6px 10px;
+}
+.design-notice,
+.design-provenance {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--success);
+  font-size: 11px;
+  line-height: 1.5;
+  flex-shrink: 0;
+}
+.design-provenance {
+  color: var(--muted);
+}
+.design-recovery,
+.design-save-error {
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--warning-soft);
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.design-save-error {
+  background: var(--danger-soft);
+}
+.design-save-error p,
+.design-recovery p {
+  margin: 0 0 8px;
+}
+.design-save-error > div,
+.design-recovery {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+@media (max-width: 1100px) {
+  .design-save-actions > span {
+    display: none;
+  }
+  .design-identity h1 {
+    font-size: 17px;
+  }
+  .brief-open .design-workspace-layout {
+    grid-template-columns: 235px minmax(0, 1fr);
+  }
+  .component-palette > span {
+    display: none;
+  }
+}
+@media (max-width: 999px) {
+  .brief-open .design-workspace-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .design-brief:not([hidden]) {
+    position: absolute;
+    z-index: 30;
+    inset: 0 auto 0 0;
+    width: min(340px, 100%);
+    box-shadow: 8px 0 24px #0002;
+  }
+  .design-studio-heading {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .design-identity {
+    width: 100%;
+  }
+  .design-identity h1 {
+    white-space: normal;
+    font-size: 17px;
+  }
+  .design-save-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+  .design-save-actions .ui-button:last-child {
+    margin-left: auto;
+  }
+  .canvas-footer > span:last-child {
+    display: none;
+  }
+}
+@media (max-width: 600px) {
+  .design-studio {
+    padding-top: 10px;
+    gap: 8px;
+  }
+  .canvas-with-inspector {
+    display: flex;
+    flex-direction: column;
+    flex: none;
+    min-height: auto;
+  }
+  .architecture-builder {
+    overflow: auto;
+  }
+  .architecture-canvas {
+    height: 320px;
+    min-height: 320px;
+    flex-shrink: 0;
+  }
+  .component-inspector {
+    border-left: 0;
+    border-top: 1px solid var(--line);
+    overflow: visible;
+  }
+  .connection-form {
+    grid-template-columns: 1fr 1fr;
+  }
+  .design-prompt {
+    padding: 10px 12px;
+  }
+  .design-workspace-footer {
+    flex-wrap: wrap;
+  }
+  .design-workspace-footer > div {
+    width: 100%;
+  }
+  .design-workspace-footer > div > .ui-button {
+    flex: 1;
+    min-width: 0;
+    padding: 6px;
+    gap: 5px;
+  }
+  .design-rubric-item {
+    flex-direction: column;
+    gap: 12px;
+  }
+  .design-deliverable-tabs {
+    padding: 0 5px;
+    gap: 0;
+  }
+  .design-deliverable-tabs .ui-tabs-trigger {
+    font-size: 11px;
+    padding: 10px 8px;
+  }
+  .design-writing {
+    padding: 12px;
+  }
+  .design-review {
+    padding: 16px;
+  }
+}

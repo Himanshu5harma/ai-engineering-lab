@@ -70,13 +70,19 @@ class Curriculum(BaseModel):
             raise ValueError("Weekly allocations cannot be negative")
         return self
 
-    def view(self, bundles: dict[str, ChallengeBundle]) -> dict[str, Any]:
+    def view(
+        self, bundles: dict[str, ChallengeBundle], designs: set[str] | None = None
+    ) -> dict[str, Any]:
         modules = []
         for module in self.modules:
             entries = [
                 {
                     **entry.model_dump(),
-                    "available": entry.slug in bundles,
+                    "available": entry.slug in (designs or set())
+                    if module.id == "system_design"
+                    else entry.slug in bundles
+                    if module.id == "coding"
+                    else False,
                     "learning_order": self.first_release.index(entry.id) + 1
                     if entry.id in self.first_release
                     else None,

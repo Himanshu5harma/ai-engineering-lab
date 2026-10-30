@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "difficulty": "Senior / Production",
+  "timebox_minutes": 90,
+  "id": "D01",
+  "slug": "enterprise-rag-platform",
+  "title": "Design an enterprise RAG platform for 1 million documents",
+  "summary": "Separate ingestion from serving, enforce tenant access before retrieval, and defend freshness and answer quality at scale.",
+  "tags": [
+    "RAG",
+    "Hybrid search",
+    "Authorization",
+    "Scaling"
+  ],
+  "scenario": "AtlasWorks is consolidating internal knowledge for 200 customer organizations. Employees ask policy and technical questions through a shared AI assistant. Documents arrive from object storage and a corporate wiki; access can be revoked while a conversation is active. Design the platform from source synchronization to a cited, streaming answer. The workload below is synthetic: treat each number as a planning input, state your assumptions, and explain what you would measure before committing capacity.",
+  "requirements": [
+    "Ingest text, PDF extracts and wiki pages with source identity, tenant, document version, effective dates and access policy. Preserve a resolvable citation for every answer source.",
+    "Support lexical and semantic retrieval, reranking and context allocation. Enforce tenant and document authorization before content enters prompts, caches or logs.",
+    "Make document updates and deletes observable and retry-safe. A revoked document must not remain usable through a cached answer or an old conversation.",
+    "Stream answers with evidence references; abstain when evidence is insufficient or contradictory. Keep offline evaluation separate from online reliability metrics.",
+    "Isolate tenant workloads and budgets. Explain behavior when embedding, reranking or generation providers are slow, throttled or unavailable."
+  ],
+  "scale": [
+    "1,000,000 current documents across 200 tenants; mean source size 200 KB (decimal). Ten largest tenants hold 60% of the documents.",
+    "Assume 40 chunks per document and 1,536 float32 values per embedding for initial sizing. Calculate source storage, raw vector storage and index overhead separately.",
+    "20,000 document updates/day; ingestion freshness objective is 15 minutes at p95. Access revocation must take effect at the next request, independently of reindexing.",
+    "40 query requests/s average, 200/s peak; mean answer length 400 tokens. Aim for p95 first token under 2.5 seconds and 99.9% monthly serving availability."
+  ],
+  "constraints": [
+    "Use a shared control plane but retain enforceable tenant boundaries throughout query, indexing and caching paths. Do not rely only on post-generation filtering.",
+    "Managed storage and model services are allowed. No GPU fleet is assumed. Give a cost model rather than inventing provider prices.",
+    "Do not trade authorization correctness for the availability target. State consistency and cache invalidation behavior explicitly.",
+    "Treat retrieved content as untrusted data; it must not grant tools or alter application policy."
+  ],
+  "prompts": {
+    "diagram": "Draw separate ingestion and query paths. Include policy enforcement, metadata, object storage, queues, retrieval indexes, model boundaries and observability. Label connections and trust boundaries in component notes.",
+    "flow": "Trace a document update, a query and an access revocation. Name each identity and policy check, version boundary, cache key and citation mapping. Show when content can enter a model prompt.",
+    "capacity": "Calculate source bytes, chunk count and raw vector bytes. Add explicit index/replica overhead assumptions. Estimate peak model token throughput, concurrent requests and ingestion worker capacity; list measurements needed to validate them.",
+    "failures": "Analyze stale indexes, revoked ACLs, provider timeouts, hot tenants and partial reindexing. For each, state detection, user-visible behavior, retry/rollback and evidence that no unauthorized content escapes.",
+    "adr": "Write an ADR choosing the retrieval/storage approach. Compare at least two alternatives, defend authorization and consistency choices, and state cost, latency and quality trade-offs plus a revisit trigger."
+  },
+  "rubric": [
+    {
+      "id": "boundaries",
+      "title": "Tenant and policy boundaries",
+      "question": "Can you identify every place content could cross a tenant or ACL boundary?",
+      "evidence": "Point to enforcement before retrieval/model exposure, cache isolation and revocation handling."
+    },
+    {
+      "id": "retrieval",
+      "title": "Evidence and retrieval lifecycle",
+      "question": "Can an answer citation be resolved after a source update?",
+      "evidence": "Explain stable source/chunk versions, hybrid ranking, context budgeting and stale deletion."
+    },
+    {
+      "id": "capacity",
+      "title": "Capacity with units",
+      "question": "Do storage and throughput estimates follow the given workload?",
+      "evidence": "Show 40 million chunks, dimensional byte math, overhead assumptions and peak token demand."
+    },
+    {
+      "id": "failure",
+      "title": "Failure behavior",
+      "question": "Does a dependency failure have a bounded and safe serving path?",
+      "evidence": "Defend timeout budgets, backpressure, freshness lag and fail-closed access checks."
+    },
+    {
+      "id": "evaluation",
+      "title": "Quality and release evidence",
+      "question": "What would block a bad retrieval release?",
+      "evidence": "Define versioned retrieval/citation metrics and tenant slices, with a rollback criterion."
+    },
+    {
+      "id": "decisions",
+      "title": "Defensible trade-offs",
+      "question": "What would make you change the chosen architecture?",
+      "evidence": "Compare alternatives and name measurable cost, quality or scaling triggers."
+    }
+  ],
+  "follow_ups": [
+    "The largest tenant grows 20 times while total query volume stays flat. What changes?",
+    "An ACL revoke happens during answer streaming. What guarantee can you actually offer?",
+    "A new embedding model improves recall but doubles vector dimensions. Design a migration and rollback."
+  ]
+}

@@ -1,3 +1,4 @@
+import { IconButton } from "./ui/button";
 import {
   BarChart3,
   Library,
@@ -8,8 +9,10 @@ import {
   LayoutDashboard,
   Moon,
   Sun,
+  Workflow,
 } from "lucide-react";
 import { NavLink, Outlet } from "react-router-dom";
+import { useEffect, useRef } from "react";
 import { ChallengeSearch } from "./ChallengeSearch";
 
 export function Shell({
@@ -19,12 +22,24 @@ export function Shell({
   theme: string;
   toggleTheme: () => void;
 }) {
+  const header = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (!header.current || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(([entry]) => {
+      document.documentElement.style.setProperty(
+        "--shell-header-height",
+        `${entry.target.getBoundingClientRect().height}px`,
+      );
+    });
+    observer.observe(header.current);
+    return () => observer.disconnect();
+  }, []);
   return (
     <div className="app-shell">
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <header className="site-header">
+      <header ref={header} className="site-header">
         <div className="header-inner">
           <NavLink
             to="/"
@@ -50,6 +65,10 @@ export function Shell({
               <History size={15} />
               Activity
             </NavLink>
+            <NavLink to="/design">
+              <Workflow size={16} />
+              Design Studio
+            </NavLink>
             <NavLink to="/progress">
               <BarChart3 size={16} />
               Progress
@@ -65,13 +84,12 @@ export function Shell({
               <i />
               Local workspace
             </span>
-            <button
-              className="icon-button"
+            <IconButton
               onClick={toggleTheme}
               aria-label={`Switch to ${theme === "dark" ? "light" : "dark"} theme`}
             >
               {theme === "dark" ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
+            </IconButton>
             <a
               className="icon-button"
               href="http://127.0.0.1:8000/docs"

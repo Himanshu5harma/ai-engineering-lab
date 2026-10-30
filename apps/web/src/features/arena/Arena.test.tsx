@@ -1,5 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router-dom";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 import { api, type Challenge } from "../../api/client";
@@ -30,6 +31,12 @@ vi.mock("../../api/client", async (importOriginal) => ({
   },
 }));
 const challenge: Challenge = {
+  schema_version: 1,
+  version: 1,
+  curriculum_id: null,
+  learning_order: null,
+  function_name: "solve",
+  production_review: "",
   slug: "test-challenge",
   version_id: "test:12345678",
   title: "Test challenge",
@@ -69,9 +76,25 @@ beforeEach(() => {
     available: true,
     message: "Ready",
   });
-  vi.mocked(api.history).mockResolvedValue({ items: [], has_more: false });
+  vi.mocked(api.history).mockResolvedValue({
+    items: [],
+    has_more: false,
+    offset: 0,
+    limit: 20,
+  });
 });
 describe("Coding Arena", () => {
+  it("shows execution output by default and lets the learner hide and reopen it", async () => {
+    mount();
+    const empty = await screen.findByText("No test results yet");
+    expect(empty).toBeVisible();
+    await userEvent.click(
+      screen.getByRole("button", { name: "Collapse test results" }),
+    );
+    expect(empty).not.toBeVisible();
+    await userEvent.click(screen.getByRole("tab", { name: "Test results" }));
+    expect(empty).toBeVisible();
+  });
   it("loads editable starter code and saves a draft", async () => {
     mount();
     const editor = await screen.findByRole("textbox", {
@@ -122,7 +145,7 @@ describe("Coding Arena", () => {
     mount();
     const run = await screen.findByRole("button", { name: "Run tests" });
     await waitFor(() => expect(run).toBeEnabled());
-    fireEvent.click(run);
+    await userEvent.click(run);
     expect(
       await screen.findByText(/Submit to verify edge cases/),
     ).toBeInTheDocument();
@@ -139,7 +162,7 @@ describe("Coding Arena", () => {
       name: "Python solution editor",
     });
     fireEvent.change(editor, { target: { value: "my current solution" } });
-    fireEvent.click(screen.getByRole("button", { name: "Submit" }));
+    await userEvent.click(screen.getByRole("button", { name: "Submit" }));
     expect(await screen.findByRole("alert")).toHaveTextContent(
       "Execution queue full",
     );
@@ -147,9 +170,11 @@ describe("Coding Arena", () => {
   });
   it("reveals hints progressively", async () => {
     mount();
-    fireEvent.click(await screen.findByRole("tab", { name: "Hints" }));
+    await userEvent.click(await screen.findByRole("tab", { name: "Hints" }));
     expect(screen.queryByText("Think about zeros")).not.toBeInTheDocument();
-    fireEvent.click(screen.getByRole("button", { name: "Reveal next hint" }));
+    await userEvent.click(
+      screen.getByRole("button", { name: "Reveal next hint" }),
+    );
     expect(screen.getByText("Think about zeros")).toBeInTheDocument();
     expect(screen.queryByText("Validate first")).not.toBeInTheDocument();
   });

@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "difficulty": "Senior / Production",
+  "timebox_minutes": 90,
+  "id": "D03",
+  "slug": "version-aware-support-assistant",
+  "title": "Design a version-aware technical support AI assistant",
+  "summary": "Keep product, version, region, authority and validity aligned from query interpretation to a source-backed answer.",
+  "tags": [
+    "Version semantics",
+    "Citations",
+    "Authority",
+    "Freshness"
+  ],
+  "scenario": "Northstar Systems ships two products in US and EU regions with overlapping release families 5.2, 5.10 and 6.0. Public manuals, release notes, errata and tenant-only support bulletins sometimes disagree. The assistant previously recommended a command removed in 5.10 because a popular 5.2 page ranked higher. Design a support assistant that asks for missing context, retrieves applicable evidence, handles contradictions and produces auditable citations. Numbers below are synthetic planning inputs.",
+  "requirements": [
+    "Resolve tenant, product, numeric dotted version, region and as-of date from authenticated context and the user question. Ask for clarification when an ambiguity changes safe advice.",
+    "Represent document applicability as explicit product/version ranges, region, validity dates, source authority, supersession and access policy. Compare 5.10 numerically, not lexicographically.",
+    "Enforce tenant/role permissions and applicability before evidence reaches generation. Reject incomplete mandatory policy metadata safely and preserve exclusion reasons without logging private text.",
+    "Define authority and conflict rules: an applicable erratum can supersede a manual, but a newer page for another release cannot. Abstain when authoritative evidence is insufficient or unresolved.",
+    "Map each answer claim to an exact source revision and excerpt. Distinguish citation integrity from whether the source actually supports the claim; retain trace evidence for investigation."
+  ],
+  "scale": [
+    "250,000 source documents; 10 million chunks; 300 tenants. Twenty percent of sources are tenant-restricted and must not enter public caches.",
+    "10 requests/s average, 80/s peak. Query-to-first-token objective is p95 under 3 seconds; provider output is streamed after policy/evidence checks.",
+    "5,000 document revisions/day. Critical errata must become usable within 5 minutes at p95; permission revocations take effect on the next request.",
+    "Maintain a golden evaluation set with 600 questions, including at least 150 version-boundary cases and 100 permission-negative cases. Report overlapping slices explicitly."
+  ],
+  "constraints": [
+    "A conversation may switch product or release. Prior turns are not authority for the next request and cannot broaden permissions.",
+    "Cache identity includes tenant/policy scope, product, version, region, evidence revision and validity. Explain invalidation and the behavior of already-streaming responses.",
+    "External models receive only permitted evidence. Untrusted manuals cannot instruct tools or override policy.",
+    "Do not claim correctness solely because a model judge agrees. Use deterministic metadata/citation checks and separately reviewed semantic answer evaluation."
+  ],
+  "prompts": {
+    "diagram": "Draw context resolution, policy/applicability filtering, authority ranking, hybrid retrieval, evidence resolution, generation, citation validation, caches and trace/evaluation stores. Label where private content becomes visible.",
+    "flow": "Trace a 5.10 EU question, an ambiguous question, a conflicting erratum and a follow-up switching to 5.2. Show structured context, numeric ranges, validity, policy checks, abstention and citation mapping.",
+    "capacity": "Estimate index and metadata size from stated chunk counts with explicit dimensions and replicas. Budget peak stage latency, model concurrency, cache partitioning and critical-errata update capacity.",
+    "failures": "Investigate a removed command, a cross-tenant cached answer, stale errata and a valid source ID with a fabricated quote. State invariants, trace fields, safe behavior and regression checks.",
+    "adr": "Choose a metadata/version and authority model. Compare query-time filtering with separate indexes, and source/quote checks with semantic evaluation. Defend cache, freshness and abstention trade-offs."
+  },
+  "rubric": [
+    {
+      "id": "context",
+      "title": "Explicit request context",
+      "question": "What happens when a version is missing or the conversation switches releases?",
+      "evidence": "Show clarification rules and a typed context that cannot inherit unauthorized scope."
+    },
+    {
+      "id": "applicability",
+      "title": "Applicability before exposure",
+      "question": "Can the highest-ranked but inapplicable page enter a prompt?",
+      "evidence": "Demonstrate tenant, product, numeric range, region and validity checks before exposure."
+    },
+    {
+      "id": "authority",
+      "title": "Conflict resolution and abstention",
+      "question": "How is a conflicting applicable erratum handled?",
+      "evidence": "Explain provenance, supersession, ties, unresolved conflict and safe abstention."
+    },
+    {
+      "id": "citations",
+      "title": "Auditable evidence",
+      "question": "Does a real source ID prove the answer claim?",
+      "evidence": "Separate immutable source/quote integrity checks from reviewed semantic support."
+    },
+    {
+      "id": "operations",
+      "title": "Latency and freshness",
+      "question": "How do critical errata and permission revokes propagate?",
+      "evidence": "Budget stage latency, invalidation, scoped caches and safe behavior during outages."
+    },
+    {
+      "id": "evaluation",
+      "title": "Regression evidence",
+      "question": "Would the release gate catch the original 5.2/5.10 failure?",
+      "evidence": "Define version/region/permission slices, negative tests, citation measures and rollback rules."
+    }
+  ],
+  "follow_ups": [
+    "A high-authority bulletin has no version metadata. How do you handle it safely?",
+    "A source is revoked after its excerpt has been streamed. What can and cannot be undone?",
+    "A reranker improves average nDCG while EU version-boundary failures rise. Should the release ship?"
+  ]
+}

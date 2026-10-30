@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { lazy, Suspense, useEffect, useState } from "react";
 import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Link, Route, Routes } from "react-router-dom";
@@ -9,6 +9,14 @@ import { Dashboard } from "./pages/Dashboard";
 import { Activity } from "./pages/Activity";
 import { Progress } from "./pages/Progress";
 import { Curriculum } from "./pages/Curriculum";
+import { DesignCatalog } from "./pages/DesignCatalog";
+const DesignStudio = lazy(() =>
+  import("./features/design/DesignStudio").then((module) => ({
+    default: module.DesignStudio,
+  })),
+);
+import "./tokens.css";
+import "./components/ui/ui.css";
 import "./styles.css";
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -49,6 +57,21 @@ function App() {
         <Route path="activity" element={<Activity />} />
         <Route path="progress" element={<Progress />} />
         <Route path="curriculum" element={<Curriculum />} />
+        <Route path="design" element={<DesignCatalog />} />
+        <Route
+          path="design/:slug"
+          element={
+            <Suspense
+              fallback={
+                <div className="page" role="status">
+                  Loading design canvas…
+                </div>
+              }
+            >
+              <DesignStudio theme={theme} />
+            </Suspense>
+          }
+        />
         <Route path="arena/:slug" element={<Arena theme={theme} />} />
         <Route
           path="*"

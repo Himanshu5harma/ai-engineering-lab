@@ -91,3 +91,21 @@ class ChallengeReview(Base):
     completed_tasks: Mapped[list[str]] = mapped_column(JSON, default=list)
     notes: Mapped[str] = mapped_column(Text, default="")
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    revision: Mapped[int] = mapped_column(default=1)
+
+
+class DesignWorkspace(Base):
+    __tablename__ = "design_workspaces"
+    __table_args__ = (
+        CheckConstraint("revision >= 1"),
+        CheckConstraint("status IN ('draft', 'ready_for_review')"),
+    )
+    version_id: Mapped[str] = mapped_column(String(160), primary_key=True)
+    slug: Mapped[str] = mapped_column(String(80), index=True)
+    revision: Mapped[int]
+    document: Mapped[dict[str, Any]] = mapped_column(JSON)
+    status: Mapped[str] = mapped_column(String(30))
+    updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), default=now)
+    exercise_snapshot: Mapped[dict[str, Any] | None] = mapped_column(JSON)
+    source_version_id: Mapped[str | None] = mapped_column(String(160))
+    source_revision: Mapped[int | None]

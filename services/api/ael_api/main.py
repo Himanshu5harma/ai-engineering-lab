@@ -1,13 +1,12 @@
 import logging
-from collections.abc import AsyncIterator, Iterator
+from collections.abc import AsyncIterator
 from contextlib import asynccontextmanager
-from typing import Annotated, Any
+from typing import Any
 
-from fastapi import Depends, FastAPI, HTTPException, Query, Request
+from fastapi import FastAPI, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
-from sqlalchemy import select, text
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session, sessionmaker
 from starlette.exceptions import HTTPException as StarletteHTTPException
@@ -18,10 +17,12 @@ from ael_api.config import Settings
 from ael_api.content import load_bundles
 from ael_api.curriculum import load_curriculum
 from ael_api.db import database, sync_content
-from ael_api.models import ChallengeReview, Submission, Track, now
-from ael_api.repository import availability, lock_queue, progress, queue_size, view
-from ael_api.reviews import ReviewUpdate, review_view
-from ael_api.schemas import CreateSubmission, ExecutionAvailability, SubmissionView
+from ael_api.dependencies import AppContext
+from ael_api.designs import load_designs
+from ael_api.routes import challenges, reviews, submissions
+from ael_api.routes import designs as designs_router
+from ael_api.routes import progress as progress_router
+from ael_api.schemas import ErrorResponse
 
 log = logging.getLogger("ael.api")
 
@@ -79,6 +80,7 @@ def create_app(
     factory = sessions
     bundles = load_bundles(settings.content_dir)
     curriculum = load_curriculum(settings.content_dir.parent / "curriculum.json")
+    designs = load_designs(settings.content_dir.parent / "system-design")
 
     @asynccontextmanager
     async def lifespan(app: FastAPI) -> AsyncIterator[None]:
@@ -96,9 +98,7 @@ def create_app(
         allow_methods=["GET", "POST"],
         allow_headers=["Content-Type"],
     )
-    app.add_middleware(
-        TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1", "testserver"]
-    )
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["localhost", "127.0.0.1"])
 
     @app.middleware("http")
     async def local_writes(request: Request, call_next: Any) -> Any:
@@ -155,148 +155,19 @@ def create_app(
             },
         )
 
-    def session_dependency() -> Iterator[Session]:
-        with factory() as session:
-            yield session
-
-    DB = Annotated[Session, Depends(session_dependency)]
-
-    def bundle_for(slug: str) -> Any:
-        if slug not in bundles:
-            raise HTTPException(
-                404, {"code": "challenge_not_found", "message": "Challenge not found"}
-            )
-        return bundles[slug]
-
-    @app.get("/api/v1/health")
-    def health(session: DB) -> dict[str, Any]:
-        session.execute(text("SELECT 1"))
-        return {"status": "ok", "execution": availability(session, settings).model_dump()}
-
-    @app.get("/api/v1/execution", response_model=ExecutionAvailability)
-    def execution(session: DB) -> ExecutionAvailability:
-        return availability(session, settings)
-
-    @app.get("/api/v1/curriculum")
-    def curriculum_plan() -> dict[str, Any]:
-        if curriculum is None:
-            raise HTTPException(
-                404, {"code": "curriculum_unavailable", "message": "No curriculum configured"}
-            )
-        return curriculum.view(bundles)
-
-    @app.get("/api/v1/tracks")
-    def tracks(session: DB) -> list[dict[str, str]]:
-        return [{"id": t.id, "title": t.title} for t in session.scalars(select(Track))]
-
-    @app.get("/api/v1/challenges")
-    def challenges(
-        track: str | None = None,
-        difficulty: str | None = None,
-        offset: int = Query(0, ge=0),
-        limit: int = Query(20, ge=1, le=100),
-    ) -> dict[str, Any]:
-        found = [
-            b
-            for b in bundles.values()
-            if (not track or b.metadata.track == track)
-            and (not difficulty or b.metadata.difficulty == difficulty)
-        ]
-        return {
-            "items": [b.summary() for b in found[offset : offset + limit]],
-            "total": len(found),
-        }
-
-    @app.get("/api/v1/challenges/{slug}")
-    def challenge(slug: str) -> dict[str, Any]:
-        return dict(bundle_for(slug).learner())
-
-    @app.get("/api/v1/challenges/{slug}/review")
-    def get_review(slug: str, session: DB) -> dict[str, Any]:
-        return review_view(session, bundle_for(slug))
-
-    @app.post("/api/v1/challenges/{slug}/review")
-    def save_review(slug: str, payload: ReviewUpdate, session: DB) -> dict[str, Any]:
-        bundle = bundle_for(slug)
-        if payload.version_id != bundle.version_id:
-            raise HTTPException(
-                409, {"code": "content_changed", "message": "Challenge changed. Reload the review."}
-            )
-        session.merge(
-            ChallengeReview(
-                version_id=bundle.version_id,
-                completed_tasks=list(dict.fromkeys(payload.completed_tasks)),
-                notes=payload.notes,
-                updated_at=now(),
-            )
+    app.state.context = AppContext(settings, factory, bundles, designs, curriculum)
+    for router in (
+        challenges.router,
+        submissions.router,
+        designs_router.router,
+        reviews.router,
+        progress_router.router,
+    ):
+        app.include_router(
+            router,
+            prefix="/api/v1",
+            responses={
+                code: {"model": ErrorResponse} for code in (400, 403, 404, 409, 413, 422, 429, 503)
+            },
         )
-        session.commit()
-        return review_view(session, bundle)
-
-    @app.post("/api/v1/submissions", status_code=202, response_model=SubmissionView)
-    def submit(payload: CreateSubmission, session: DB) -> SubmissionView:
-        bundle = bundle_for(payload.challenge_slug)
-        if bundle.version_id != payload.version_id:
-            raise HTTPException(
-                409,
-                {
-                    "code": "content_changed",
-                    "message": "Challenge changed. Reload before submitting.",
-                },
-            )
-        ready = availability(session, settings)
-        if not ready.available:
-            raise HTTPException(503, {"code": "execution_unavailable", "message": ready.message})
-        lock_queue(session)
-        if queue_size(session) >= settings.queue_limit:
-            raise HTTPException(
-                429, {"code": "queue_full", "message": "Execution queue full. Try again shortly."}
-            )
-        row = Submission(version_id=bundle.version_id, code=payload.code, action=payload.action)
-        session.add(row)
-        session.commit()
-        session.refresh(row)
-        return view(row)
-
-    @app.get("/api/v1/submissions")
-    def history(
-        session: DB,
-        challenge_slug: str | None = None,
-        offset: int = Query(0, ge=0),
-        limit: int = Query(20, ge=1, le=100),
-    ) -> dict[str, Any]:
-        query = select(Submission).order_by(Submission.created_at.desc())
-        if challenge_slug:
-            bundle_for(challenge_slug)
-            query = query.where(Submission.version_id.like(f"{challenge_slug}:%"))
-        rows = session.scalars(query.offset(offset).limit(limit)).all()
-        return {
-            "items": [view(s).model_dump(mode="json") for s in rows],
-            "offset": offset,
-            "limit": limit,
-            "has_more": len(rows) == limit,
-        }
-
-    def find_submission(submission_id: str, session: Session) -> Submission:
-        row = session.get(Submission, submission_id)
-        if row is None:
-            raise HTTPException(
-                404, {"code": "submission_not_found", "message": "Submission not found"}
-            )
-        return row
-
-    @app.get("/api/v1/submissions/{submission_id}", response_model=SubmissionView)
-    def submission(submission_id: str, session: DB) -> SubmissionView:
-        return view(find_submission(submission_id, session), include_code=True)
-
-    @app.get("/api/v1/submissions/{submission_id}/results")
-    def results(submission_id: str, session: DB) -> dict[str, Any]:
-        result = view(find_submission(submission_id, session))
-        return {"status": result.status, "results": [r.model_dump() for r in result.results]}
-
-    @app.get("/api/v1/progress")
-    @app.get("/api/v1/dashboard")
-    def dashboard(session: DB) -> dict[str, Any]:
-        return progress(session, [b.version_id for b in bundles.values()])
-
     return app

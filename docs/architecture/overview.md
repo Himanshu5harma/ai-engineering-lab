@@ -36,4 +36,10 @@ Private names, expected/actual values, exceptions, and captured output are redac
 
 `Track` → `Challenge` → `ChallengeVersion` → `Submission` → `TestResult`.
 
-`WorkerHealth` supplies a recent availability signal. Progress is derived from recorded events rather than a separately mutable completion counter. Each submission has exactly one execution; separate attempts/runs/mastery tables would duplicate the MVP lifecycle. Future labs and design submissions will add their own models and migrations.
+`WorkerHealth` supplies a recent availability signal. Progress is derived from recorded events rather than a separately mutable completion counter. Each submission has exactly one execution; separate attempts/runs/mastery tables would duplicate the MVP lifecycle. `ChallengeReview` stores separate learner self-assessments. `DesignWorkspace` stores versioned architecture documents, optimistic revisions, original exercise snapshots where available and carry-forward provenance. Labs remain future work.
+
+## API and client contracts
+
+Focused routers under `ael_api/routes` use shared dependencies from `dependencies.py`. Every JSON endpoint declares a Pydantic response model. `scripts/export_openapi.py` exports schema without starting a service or contacting PostgreSQL. `npm --prefix apps/web run api:generate` produces the schema snapshot, TypeScript types and named SDK methods; `make check` rejects stale generated output.
+
+See [refinement decisions](../decisions/2026-10-refinement.md) for draft state, source provenance, proxy trust, bounded queries and UI ownership.

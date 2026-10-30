@@ -13,11 +13,8 @@ export function Results({ submission }: { submission?: Submission }) {
       <div className="results-empty">
         <CircleDashed size={23} />
         <div>
-          <strong>Your test bench is ready.</strong>
-          <p>
-            Run the public tests to inspect behavior, then submit for full
-            verification.
-          </p>
+          <strong>No test results yet</strong>
+          <p>Run tests to inspect results. Submit checks the full suite.</p>
         </div>
       </div>
     );

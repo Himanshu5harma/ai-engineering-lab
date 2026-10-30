@@ -28,7 +28,7 @@ export function CurriculumOverview() {
   return (
     <section className="curriculum-overview">
       <div className="section-title">
-        <h2>Your engineering curriculum</h2>
+        <h2>Curriculum roadmap</h2>
         <Link to="/curriculum" className="text-link">
           {plan.data.total_planned} planned exercises
           <ArrowUpRight size={14} />
@@ -41,13 +41,23 @@ export function CurriculumOverview() {
             <Link
               key={module.id}
               to={
-                module.id === "coding" ? "/arena" : `/curriculum#${module.id}`
+                module.id === "coding"
+                  ? "/arena"
+                  : module.id === "system_design"
+                    ? "/design"
+                    : `/curriculum#${module.id}`
               }
               className={module.available_count ? "module-ready" : ""}
             >
               <span className="module-heading">
                 <Icon size={17} />
-                <strong>{module.target_count}</strong>
+                <strong>
+                  {module.available_count}
+                  <small className="module-planned-count">
+                    {" "}
+                    / {module.target_count} planned
+                  </small>
+                </strong>
               </span>
               <h3>{module.title}</h3>
               <span className="module-availability">

@@ -1,3 +1,5 @@
+import { Input } from "./ui/primitives";
+import { IconButton } from "./ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { ArrowUpRight, Search, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -69,17 +71,16 @@ export function ChallengeSearch() {
         <div className="search-dialog-inner">
           <div className="search-dialog-heading">
             <h2 id="search-title">Find your next challenge</h2>
-            <button
-              className="icon-button"
+            <IconButton
               onClick={() => setOpen(false)}
               aria-label="Close challenge search"
             >
               <X size={18} />
-            </button>
+            </IconButton>
           </div>
           <label className="search-dialog-input">
             <Search size={19} />
-            <input
+            <Input
               ref={input}
               aria-label="Search all challenge content"
               placeholder="Search by problem or concept…"

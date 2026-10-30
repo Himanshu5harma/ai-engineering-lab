@@ -1,3 +1,5 @@
+import { Textarea } from "./ui/primitives";
+import { Button } from "./ui/button";
 import { useQuery } from "@tanstack/react-query";
 import { Check, ClipboardCheck, Copy } from "lucide-react";
 import { useState } from "react";
@@ -61,15 +63,16 @@ export function FirstReleasePath() {
             self-reviews recorded
           </p>
         </div>
-        <button
-          className="button small"
+        <Button
+          size="sm"
+
           onClick={() => {
             void copy();
           }}
         >
           <Copy size={13} />
           Copy checklist
-        </button>
+        </Button>
       </div>
       <ol className="first-release-steps">
         {ordered.map((entry, index) => {
@@ -120,7 +123,7 @@ export function FirstReleasePath() {
         {copyState}
       </div>
       {copyState === "Select and copy the checklist below" && (
-        <textarea
+        <Textarea
           className="copy-checklist"
           aria-label="Copyable learning checklist"
           readOnly

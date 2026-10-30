@@ -32,7 +32,7 @@ def sessions():
 
 @pytest.fixture
 def client(sessions):
-    with TestClient(create_app(Settings(), sessions)) as client:
+    with TestClient(create_app(Settings(), sessions), base_url="http://localhost") as client:
         yield client
 
 

@@ -1,3 +1,11 @@
+import {
+  Tabs,
+  TabsList,
+  TabsTrigger,
+  TabsContent,
+} from "../../components/ui/tabs";
+import { Textarea } from "../../components/ui/primitives";
+import { Button } from "../../components/ui/button";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -10,11 +18,25 @@ import {
   History,
   Lightbulb,
   Play,
-  RotateCcw,
   Send,
   ShieldCheck,
+  Maximize2,
+  Minimize2,
+  PanelLeftClose,
+  PanelLeftOpen,
+  ChevronDown,
+  ChevronUp,
+  Code2,
 } from "lucide-react";
-import { lazy, Suspense, useCallback, useEffect, useState } from "react";
+import {
+  lazy,
+  Suspense,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type CSSProperties,
+} from "react";
 import Markdown from "react-markdown";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import {
@@ -28,6 +50,7 @@ import { ErrorBox, Loading } from "../../components/Feedback";
 import { Results } from "./Results";
 import { useBookmarks } from "../../hooks/useBookmarks";
 import { EngineeringReview } from "./EngineeringReview";
+import { SplitHandle } from "./SplitHandle";
 const PythonEditor = lazy(() =>
   import("./PythonEditor").then((module) => ({ default: module.PythonEditor })),
 );
@@ -91,6 +114,17 @@ function Workspace({
   const [selectedId, setSelectedId] = useState<string>();
   const [historyOffset, setHistoryOffset] = useState(0);
   const [restoreError, setRestoreError] = useState<Error>();
+  const root = useRef<HTMLDivElement>(null);
+  const workspace = useRef<HTMLDivElement>(null);
+  const [expanded, setExpanded] = useState(false);
+  const [focus, setFocus] = useState(false);
+  const [mobilePane, setMobilePane] = useState("code");
+  const [resultsOpen, setResultsOpen] = useState(true);
+  const [problemWidth, setProblemWidth] = useState(34);
+  const [resultsSize, setResultsSize] = useState(120);
+  const [workspaceWidth, setWorkspaceWidth] = useState(1000);
+  const [maxResultsSize, setMaxResultsSize] = useState(360);
+  const [layoutNotice, setLayoutNotice] = useState("");
   const queryClient = useQueryClient();
   const availability = useQuery({
     queryKey: ["availability"],
@@ -115,6 +149,9 @@ function Workspace({
       queryClient.setQueryData(["submission", result.id], result);
       setSelectedId(result.id);
       setBottomTab("results");
+      setResultsOpen(true);
+      setResultsSize(216);
+      setMobilePane("code");
       void queryClient.invalidateQueries({
         queryKey: ["history", challenge.slug],
       });
@@ -131,6 +168,62 @@ function Workspace({
     },
     [canExecute, execute],
   );
+  useEffect(() => {
+    if (!workspace.current || typeof ResizeObserver === "undefined") return;
+    const observer = new ResizeObserver(([entry]) => {
+      setWorkspaceWidth(entry.contentRect.width || 1000);
+      setMaxResultsSize(
+        Math.max(100, Math.min(360, entry.contentRect.height - 440)),
+      );
+    });
+    observer.observe(workspace.current);
+    return () => observer.disconnect();
+  }, []);
+  useEffect(() => {
+    if (!expanded) return;
+    const previous = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = previous;
+    };
+  }, [expanded]);
+  useEffect(() => {
+    const fullscreenChanged = () =>
+      setExpanded(document.fullscreenElement === root.current);
+    const escape = (event: KeyboardEvent) => {
+      if (
+        event.key === "Escape" &&
+        !root.current?.querySelector("dialog[open]")
+      ) {
+        if (document.fullscreenElement === root.current)
+          void document.exitFullscreen().catch(() => {});
+        setExpanded(false);
+      }
+    };
+    document.addEventListener("fullscreenchange", fullscreenChanged);
+    window.addEventListener("keydown", escape);
+    return () => {
+      document.removeEventListener("fullscreenchange", fullscreenChanged);
+      window.removeEventListener("keydown", escape);
+    };
+  }, []);
+  async function toggleFullscreen() {
+    if (expanded) {
+      if (document.fullscreenElement === root.current)
+        await document.exitFullscreen();
+      setExpanded(false);
+    } else {
+      setExpanded(true);
+      setLayoutNotice("");
+      try {
+        await root.current?.requestFullscreen?.();
+      } catch {
+        setLayoutNotice(
+          "Workspace expanded. Browser fullscreen is unavailable; press Esc to return.",
+        );
+      }
+    }
+  }
   useEffect(() => {
     try {
       localStorage.setItem(key, code);
@@ -192,6 +285,7 @@ function Workspace({
         setCode(row.code);
       setSelectedId(id);
       setBottomTab("results");
+      setResultsOpen(true);
       setRestoreError(undefined);
     } catch (error) {
       setRestoreError(
@@ -202,22 +296,25 @@ function Workspace({
     }
   };
   return (
-    <div className="arena-page">
+    <div
+      ref={root}
+      className={`arena-page arena-workbench ${expanded ? "arena-expanded" : ""} ${focus ? "editor-focus" : ""}`}
+    >
       <div className="arena-heading">
         <Link to="/arena">
           <ArrowLeft size={15} />
           All challenges
         </Link>
         <div className="arena-heading-title">
-          <h1>
-            {challenge.curriculum_id && (
-              <span className="challenge-id">{challenge.curriculum_id}</span>
-            )}
-            {challenge.title}
-          </h1>
+          {challenge.curriculum_id && (
+            <span className="challenge-id">{challenge.curriculum_id}</span>
+          )}
+          <h1 title={challenge.title}>{challenge.title}</h1>
           <span className={`difficulty ${challenge.difficulty.toLowerCase()}`}>
             {challenge.difficulty}
           </span>
+        </div>
+        <div className="workspace-view-controls">
           <button
             className={`button small workspace-save ${saved.includes(challenge.slug) ? "is-saved" : ""}`}
             aria-label={`${saved.includes(challenge.slug) ? "Unsave" : "Save"} this challenge`}
@@ -230,8 +327,57 @@ function Workspace({
             />
             {saved.includes(challenge.slug) ? "Saved" : "Save challenge"}
           </button>
+          <div
+            className="mobile-workspace-switch"
+            aria-label="Mobile workspace view"
+          >
+            <Button
+              size="sm"
+
+              aria-pressed={mobilePane === "problem"}
+              onClick={() => {
+                setMobilePane("problem");
+                setFocus(false);
+              }}
+            >
+              <FileCode2 size={14} />
+              Problem
+            </Button>
+            <Button
+              size="sm"
+
+              aria-pressed={mobilePane === "code"}
+              onClick={() => setMobilePane("code")}
+            >
+              <Code2 size={14} />
+              Code
+            </Button>
+          </div>
+          <Button
+            size="sm"
+            className="focus-toggle"
+            aria-pressed={focus}
+            onClick={() => setFocus((value) => !value)}
+          >
+            {focus ? <PanelLeftOpen size={14} /> : <PanelLeftClose size={14} />}
+            {focus ? "Show problem" : "Focus editor"}
+          </Button>
+          <Button
+            size="sm"
+
+            onClick={() => {
+              void toggleFullscreen();
+            }}
+            aria-label={
+              expanded
+                ? "Exit fullscreen workspace"
+                : "Enter fullscreen workspace"
+            }
+          >
+            {expanded ? <Minimize2 size={14} /> : <Maximize2 size={14} />}
+            <span>{expanded ? "Exit fullscreen" : "Fullscreen"}</span>
+          </Button>
         </div>
-        <span className="subtle">PYTHON 3.12 · STANDARD LIBRARY</span>
       </div>
       {(!availability.data?.available || availability.error) && (
         <div className="unavailable-banner" role="status">
@@ -249,51 +395,37 @@ function Workspace({
           {bookmarkError}
         </div>
       )}
-      <div className="workspace">
-        <section className="problem-panel">
-          <div
-            className="tab-bar"
-            role="tablist"
-            aria-label="Challenge content"
-          >
-            <button
-              role="tab"
-              aria-selected={tab === "problem"}
-              className={tab === "problem" ? "selected" : ""}
-              onClick={() => setTab("problem")}
-            >
+      {layoutNotice && (
+        <div className="inline-warning" role="status">
+          {layoutNotice}
+        </div>
+      )}
+      <div
+        ref={workspace}
+        className="workspace"
+        data-mobile-pane={mobilePane}
+        style={{ "--problem-width": `${problemWidth}%` } as CSSProperties}
+      >
+        <Tabs className="problem-panel" value={tab} onValueChange={setTab}>
+          <TabsList className="tab-bar" aria-label="Challenge content">
+            <TabsTrigger value="problem">
               <FileCode2 size={15} />
               Problem
-            </button>
-            <button
-              role="tab"
-              aria-selected={tab === "hints"}
-              className={tab === "hints" ? "selected" : ""}
-              onClick={() => setTab("hints")}
-            >
+            </TabsTrigger>
+            <TabsTrigger value="hints">
               <Lightbulb size={15} />
               Hints
-            </button>
-            <button
-              role="tab"
-              aria-selected={tab === "notes"}
-              className={tab === "notes" ? "selected" : ""}
-              onClick={() => setTab("notes")}
-            >
+            </TabsTrigger>
+            <TabsTrigger value="notes">
               <NotebookPen size={15} />
               Notes
-            </button>
-            <button
-              role="tab"
-              aria-selected={tab === "review"}
-              className={tab === "review" ? "selected" : ""}
-              onClick={() => setTab("review")}
-            >
+            </TabsTrigger>
+            <TabsTrigger value="review">
               <ClipboardCheck size={15} />
               Review
-            </button>
-          </div>
-          <div className="problem-scroll" role="tabpanel">
+            </TabsTrigger>
+          </TabsList>
+          <TabsContent value={tab} className="problem-scroll">
             {tab === "problem" ? (
               <>
                 <div className="tag-row">
@@ -357,15 +489,14 @@ function Workspace({
                     <Markdown>{h}</Markdown>
                   </div>
                 ))}
-                <button
-                  className="button"
+                <Button
                   disabled={hints === challenge.hints.length}
                   onClick={() => setHints((n) => n + 1)}
                 >
                   {hints === challenge.hints.length
                     ? "All hints revealed"
                     : "Reveal next hint"}
-                </button>
+                </Button>
               </div>
             ) : tab === "review" ? (
               <EngineeringReview challenge={challenge} />
@@ -378,7 +509,7 @@ function Workspace({
                   revisit.
                 </p>
                 <label htmlFor="engineering-notes">Engineering notes</label>
-                <textarea
+                <Textarea
                   id="engineering-notes"
                   value={notes}
                   maxLength={20000}
@@ -398,26 +529,30 @@ function Workspace({
                 </small>
               </div>
             )}
-          </div>
-        </section>
+          </TabsContent>
+        </Tabs>
+        <SplitHandle
+          orientation="vertical"
+          label="Resize problem panel"
+          value={problemWidth}
+          min={22}
+          max={55}
+          step={2}
+          scale={100 / workspaceWidth}
+          onChange={setProblemWidth}
+        />
         <section className="code-panel">
-          <div className="editor-toolbar">
-            <span>
-              <FileCode2 size={15} />
-              solution.py<span className="language-label">Python</span>
-            </span>
-            <div>
-              <span
-                className={`draft-state ${draftSaved ? "" : "draft-error"}`}
-              >
-                {draftSaved ? <Check size={12} /> : null}
-                {draftSaved ? "Draft saved locally" : "Draft not saved"}
-              </span>
-              <button
-                className="icon-button"
-                aria-label="Reset to starter code"
-                title="Reset to starter code"
-                onClick={() => {
+          <div className="editor-container">
+            <Suspense
+              fallback={<Loading text="Loading local Python editor…" />}
+            >
+              <PythonEditor
+                code={code}
+                onChange={setCode}
+                theme={theme}
+                modelKey={challenge.version_id}
+                draftSaved={draftSaved}
+                onReset={() => {
                   if (
                     window.confirm(
                       "Reset your draft to the starter implementation?",
@@ -425,33 +560,21 @@ function Workspace({
                   )
                     setCode(challenge.starter_code);
                 }}
-              >
-                <RotateCcw size={14} />
-              </button>
-            </div>
-          </div>
-          <div className="editor-container">
-            <Suspense
-              fallback={<Loading text="Loading local Python editor…" />}
-            >
-              <PythonEditor code={code} onChange={setCode} theme={theme} />
+              />
             </Suspense>
           </div>
           <div className="execution-toolbar">
             <span className="shortcut">⌘ / Ctrl + Enter to run</span>
             <div>
-              <button
-                className="button"
-                disabled={!canExecute}
-                onClick={() => perform("run")}
-              >
+              <Button disabled={!canExecute} onClick={() => perform("run")}>
                 <Play size={14} />
                 {execute.isPending && execute.variables === "run"
                   ? "Queuing…"
                   : "Run tests"}
-              </button>
-              <button
-                className="button primary"
+              </Button>
+              <Button
+                variant="default"
+
                 disabled={!canExecute}
                 onClick={() => perform("submit")}
               >
@@ -459,36 +582,79 @@ function Workspace({
                 {execute.isPending && execute.variables === "submit"
                   ? "Queuing…"
                   : "Submit"}
-              </button>
+              </Button>
             </div>
           </div>
           {execute.error && <ErrorBox error={execute.error} />}
-          <div className="results-panel">
-            <div
-              className="tab-bar"
-              role="tablist"
-              aria-label="Execution output"
-            >
-              <button
-                role="tab"
-                aria-selected={bottomTab === "results"}
-                className={bottomTab === "results" ? "selected" : ""}
-                onClick={() => setBottomTab("results")}
+          {resultsOpen && (
+            <SplitHandle
+              orientation="horizontal"
+              label="Resize test results"
+              value={Math.min(resultsSize, maxResultsSize)}
+              min={120}
+              max={maxResultsSize}
+              step={20}
+              reverse
+              onChange={setResultsSize}
+            />
+          )}
+          <Tabs
+            value={bottomTab}
+            onValueChange={(value) => {
+              setBottomTab(value);
+              setResultsOpen(true);
+              setResultsSize(216);
+            }}
+            className={`results-panel ${resultsOpen ? "results-open" : "results-collapsed"}`}
+            style={{
+              height: resultsOpen ? Math.min(resultsSize, maxResultsSize) : 38,
+            }}
+          >
+            <TabsList className="tab-bar" aria-label="Execution output">
+              <TabsTrigger
+                value="results"
+                onClick={() => {
+                  setResultsOpen(true);
+                  setResultsSize(216);
+                }}
               >
                 <Check size={15} />
                 Test results
-              </button>
-              <button
-                role="tab"
-                aria-selected={bottomTab === "history"}
-                className={bottomTab === "history" ? "selected" : ""}
-                onClick={() => setBottomTab("history")}
+              </TabsTrigger>
+              <TabsTrigger
+                value="history"
+                onClick={() => {
+                  setResultsOpen(true);
+                  setResultsSize(216);
+                }}
               >
                 <History size={15} />
                 History
+              </TabsTrigger>
+              <button
+                className="results-collapse"
+                aria-controls="execution-output-panel"
+                aria-label={
+                  resultsOpen ? "Collapse test results" : "Expand test results"
+                }
+                aria-expanded={resultsOpen}
+                onClick={() => setResultsOpen((value) => !value)}
+              >
+                {resultsOpen ? (
+                  <ChevronDown size={14} />
+                ) : (
+                  <ChevronUp size={14} />
+                )}
+                <span>{resultsOpen ? "Hide output" : "Show output"}</span>
               </button>
-            </div>
-            <div className="results-scroll" role="tabpanel">
+            </TabsList>
+            <TabsContent
+              value={bottomTab}
+              className="results-scroll"
+              id="execution-output-panel"
+              role="tabpanel"
+              hidden={!resultsOpen}
+            >
               {bottomTab === "results" ? (
                 selected.error ? (
                   <ErrorBox
@@ -526,6 +692,8 @@ function Workspace({
                               onClick={() => {
                                 setSelectedId(s.id);
                                 setBottomTab("results");
+                                setResultsOpen(true);
+                                setResultsSize(216);
                               }}
                             >
                               <strong className={`status-text ${s.status}`}>
@@ -548,29 +716,31 @@ function Workspace({
                         ))}
                       </div>
                       <div className="history-pagination">
-                        <button
-                          className="button small"
+                        <Button
+                          size="sm"
+
                           disabled={historyOffset === 0}
                           onClick={() =>
                             setHistoryOffset((n) => Math.max(0, n - 20))
                           }
                         >
                           Newer
-                        </button>
-                        <button
-                          className="button small"
+                        </Button>
+                        <Button
+                          size="sm"
+
                           disabled={!history.data.has_more}
                           onClick={() => setHistoryOffset((n) => n + 20)}
                         >
                           Older
-                        </button>
+                        </Button>
                       </div>
                     </>
                   )}
                 </>
               )}
-            </div>
-          </div>
+            </TabsContent>
+          </Tabs>
         </section>
       </div>
       <div className="arena-statusbar">

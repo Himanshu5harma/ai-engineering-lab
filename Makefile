@@ -31,6 +31,7 @@ test:
 	npm --prefix apps/web test
 
 check:
+	npm --prefix apps/web run api:check
 	.venv/bin/ruff check conftest.py services infra/sandbox content scripts
 	.venv/bin/ruff format --check conftest.py services infra/sandbox content scripts
 	.venv/bin/mypy

@@ -1,8 +1,8 @@
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from typing import Any
 
 from sqlalchemy import func, select, text
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, defer
 
 from ael_api.config import Settings
 from ael_api.models import ChallengeReview, Submission, WorkerHealth, now
@@ -73,24 +73,53 @@ def view(row: Submission, include_code: bool = False) -> SubmissionView:
 
 
 def progress(session: Session, versions: list[str]) -> dict[str, Any]:
+    current = Submission.version_id.in_(versions)
+    counts = session.execute(
+        select(
+            func.count().filter(Submission.action == "submit"),
+            func.count().filter(Submission.action == "run"),
+            func.count(func.distinct(Submission.version_id)).filter(Submission.action == "submit"),
+        ).where(current)
+    ).one()
+    solved = sorted(
+        version.split(":")[0]
+        for version in session.scalars(
+            select(Submission.version_id)
+            .where(current, Submission.action == "submit", Submission.status == "passed")
+            .distinct()
+        )
+    )
+    today = now().date()
+    days = {str(today - timedelta(days=offset)): 0 for offset in reversed(range(7))}
+    since = datetime.combine(today - timedelta(days=6), datetime.min.time(), tzinfo=UTC)
+    # PostgreSQL timestamps are normalized explicitly, independent of the server/session timezone.
+    day = (
+        func.date(func.timezone("UTC", Submission.created_at))
+        if session.bind is not None and session.bind.dialect.name == "postgresql"
+        else func.date(Submission.created_at)
+    )
+    for date, count in session.execute(
+        select(day, func.count())
+        .where(
+            current,
+            Submission.created_at >= since,
+            Submission.created_at < since + timedelta(days=7),
+        )
+        .group_by(day)
+    ):
+        days[str(date)] = count
+    # Only the bounded activity list loads result rows; source is never selected here.
     rows = session.scalars(
         select(Submission)
-        .where(Submission.version_id.in_(versions))
-        .order_by(Submission.created_at.desc())
+        .options(defer(Submission.code))
+        .where(current)
+        .order_by(Submission.created_at.desc(), Submission.id.desc())
+        .limit(5)
     ).all()
-    attempts = [s for s in rows if s.action == "submit"]
-    solved = sorted({s.version_id.split(":")[0] for s in attempts if s.status == "passed"})
-    attempted = {s.version_id for s in attempts}
-    days: dict[str, int] = {}
-    today = now().date()
-    for offset in reversed(range(7)):
-        days[str(today - timedelta(days=offset))] = 0
-    for row in rows:
-        day = row.created_at.date().isoformat()
-        if day in days:
-            days[day] += 1
-    reviews = session.scalars(
-        select(ChallengeReview).where(ChallengeReview.version_id.in_(versions))
+    reviews = session.execute(
+        select(ChallengeReview.version_id, ChallengeReview.completed_tasks).where(
+            ChallengeReview.version_id.in_(versions)
+        )
     ).all()
     reviewed = [
         review.version_id.split(":")[0]
@@ -101,9 +130,9 @@ def progress(session: Session, versions: list[str]) -> dict[str, Any]:
     return {
         "review_completed_slugs": reviewed,
         "solved_slugs": solved,
-        "attempted": len(attempted),
-        "submissions": len(attempts),
-        "runs": len(rows) - len(attempts),
+        "attempted": counts[2],
+        "submissions": counts[0],
+        "runs": counts[1],
         "total_challenges": len(versions),
         "weekly_activity": [{"date": day, "executions": count} for day, count in days.items()],
         "recent_submissions": [view(s).model_dump(mode="json") for s in rows[:5]],

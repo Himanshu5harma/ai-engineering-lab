@@ -1,3 +1,4 @@
+import { Button, IconButton } from "../components/ui/button";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowLeft,
@@ -80,8 +81,7 @@ export function Activity() {
           <h1>Activity</h1>
           <p>Every run, every iteration, and the results behind it.</p>
         </div>
-        <button
-          className="button"
+        <Button
           onClick={() => {
             void history.refetch();
           }}
@@ -89,7 +89,7 @@ export function Activity() {
         >
           <RefreshCw size={14} />
           Refresh history
-        </button>
+        </Button>
       </div>
       <section className="execution-history">
         <div className="history-section-heading">
@@ -199,22 +199,24 @@ export function Activity() {
               executions shown
             </span>
             <div>
-              <button
-                className="button small"
+              <Button
+                size="sm"
+
                 disabled={page === 0}
                 onClick={() => move(page - 1)}
               >
                 <ArrowLeft size={13} />
                 Newer
-              </button>
-              <button
-                className="button small"
+              </Button>
+              <Button
+                size="sm"
+
                 disabled={!history.data.has_more}
                 onClick={() => move(page + 1)}
               >
                 Older
                 <ArrowRight size={13} />
-              </button>
+              </Button>
             </div>
           </div>
         )}
@@ -242,13 +244,9 @@ export function Activity() {
                   : "Saved execution"}
               </h2>
             </div>
-            <button
-              className="icon-button"
-              onClick={dismiss}
-              aria-label="Close execution details"
-            >
+            <IconButton onClick={dismiss} aria-label="Close execution details">
               <X size={19} />
-            </button>
+            </IconButton>
           </header>
           {detail.isPending ? (
             <Loading />
@@ -267,14 +265,15 @@ export function Activity() {
                     {new Date(detail.data.created_at).toLocaleString()}
                   </span>
                   <div>
-                    <button
-                      className="button small"
+                    <Button
+                      size="sm"
+
                       disabled={!detail.data.code}
                       onClick={() => download(detail.data!)}
                     >
                       <Download size={13} />
                       Export Python
-                    </button>
+                    </Button>
                     <Link
                       className="button small"
                       to={`/arena/${detail.data.challenge_slug}`}

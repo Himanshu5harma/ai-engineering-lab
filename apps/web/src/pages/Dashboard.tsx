@@ -1,3 +1,4 @@
+import { Card } from "../components/ui/primitives";
 import { useQuery } from "@tanstack/react-query";
 import {
   ArrowRight,
@@ -61,13 +62,6 @@ export function Dashboard() {
   ).length;
   return (
     <div className="page dashboard">
-      <div className="workspace-context">
-        <span>
-          <Layers size={13} />
-          Personal workspace
-        </span>
-        <span>Build it. Test it. Understand it.</span>
-      </div>
       <div className="page-heading">
         <div>
           <div className="eyebrow">YOUR AI ENGINEERING WORKBENCH</div>
@@ -80,7 +74,6 @@ export function Dashboard() {
           <ArrowRight size={15} />
         </Link>
       </div>
-      <CurriculumOverview />
       <div className="overview-metrics">
         <Link to="/progress">
           <span className="metric-icon metric-blue">
@@ -131,6 +124,7 @@ export function Dashboard() {
           {next && (
             <FeaturedChallenge challenge={next} continuing={!!lastChallenge} />
           )}
+          <CurriculumOverview />
           <section className="topic-explorer">
             <div className="section-title">
               <h2>Explore a concept</h2>
@@ -260,7 +254,7 @@ export function Dashboard() {
           </section>
         </div>
         <aside className="learning-aside" aria-label="Practice progress">
-          <section className="panel learning-track">
+          <Card className="panel learning-track">
             <div className="section-title">
               <h2>Your first 12 challenges</h2>
               <span className="track-icon">
@@ -297,9 +291,9 @@ export function Dashboard() {
               View learning progress
               <ArrowRight size={14} />
             </Link>
-          </section>
+          </Card>
           <WeekActivity days={data.weekly_activity} />
-          <section className="panel environment-panel">
+          <Card className="panel environment-panel">
             <div className="section-title">
               <h2>Execution environment</h2>
               <span
@@ -328,7 +322,7 @@ export function Dashboard() {
                 execution.data?.message ||
                 "Checking local worker…"}
             </p>
-          </section>
+          </Card>
         </aside>
       </div>
       <p className="evidence-note">{data.evidence_note}</p>

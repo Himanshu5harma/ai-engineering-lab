@@ -71,8 +71,8 @@ export function Curriculum() {
             <li>A production RAG lab and a Debugging Arena.</li>
           </ol>
           <p>
-            Planned entries are a roadmap. They do not have runnable
-            verification or a working studio yet.
+            Twelve coding challenges and three design exercises are ready. Other
+            entries remain on the roadmap.
           </p>
         </section>
       </div>
@@ -91,8 +91,7 @@ export function Curriculum() {
           </div>
           {module.id === "system_design" && (
             <p className="module-deliverables">
-              Each future design requires:{" "}
-              {data.design_deliverables.join(" · ")}.
+              Each design requires: {data.design_deliverables.join(" · ")}.
             </p>
           )}
           <div className="curriculum-entry-grid">
@@ -110,7 +109,10 @@ export function Curriculum() {
                   {entry.focus && <small>{entry.focus}</small>}
                 </div>
                 {entry.available && entry.slug ? (
-                  <Link className="text-link" to={`/arena/${entry.slug}`}>
+                  <Link
+                    className="text-link"
+                    to={`/${module.id === "system_design" ? "design" : "arena"}/${entry.slug}`}
+                  >
                     <CheckCircle2 size={13} />
                     Ready
                     <ArrowRight size={13} />

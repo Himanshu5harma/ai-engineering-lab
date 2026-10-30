@@ -23,15 +23,17 @@ Each package includes a clear contract, starter, reference, public/private fixtu
 
 ## Full curriculum: 88 planned entries
 
-`content/curriculum.json` is the validated source of truth: 64 coding entries across seven tracks, 10 system design entries, 6 practical labs and 8 production debugging scenarios. Twelve are ready. The other 76 are roadmap metadata, not working exercises or fake passable placeholders. The Curriculum screen exposes this distinction.
+`content/curriculum.json` is the validated source of truth: 64 coding entries across seven tracks, 10 system design entries, 6 practical labs and 8 production debugging scenarios. Twelve coding and three design exercises are ready. The other 73 are roadmap metadata. The Curriculum screen exposes this distinction.
 
 Suggested planning baseline: coding 6h, system design 3h, practical labs 8h, debugging/revision 3h per week. These are planning allocations, not measured study time; persistent personal study-goal settings remain future work.
 
-## Next: functioning System Design Studio
+## Delivered: System Design Studio
 
-Build a React Flow canvas with configurable nodes, persistent notes/edges, diagram export and explicit rubric-based self-review. Start with D01 enterprise RAG for one million documents, D02 ingestion at 100000 updates/day, and D03 version-aware technical support. Require a component diagram, request/data flow, capacity assumptions, failure analysis and ADR. These three exercises are not implemented in this milestone.
+The React Flow canvas supports configurable components, notes, positions and labeled connections, with PostgreSQL drafts and SVG/Markdown/JSON export. D01 covers enterprise RAG for one million documents, D02 durable ingestion at 100000 updates/day, and D03 version-aware technical support. Each has requirements, workload assumptions, constraints, five targeted deliverable prompts, a six-criterion review rubric and senior follow-ups.
 
-## Then: production RAG lab and Debugging Arena
+Review readiness requires a component diagram with at least two connected components plus request/data flow, capacity assumptions, failure analysis and ADR text. These are structural checks, not architecture quality verification. Rubric ratings are explicit learner self-assessment. Saved work is content-versioned, uses optimistic revision checks and cannot grant coding credit. Unsaved browser recovery and exports help preserve work during navigation or a save conflict.
+
+## Next: production RAG lab and Debugging Arena
 
 Build L03 as a real multi-file React/FastAPI/PostgreSQL/pgvector project using public/synthetic data. Include hybrid retrieval, reranking, citations, permission filters and measured quality. Start debugging with stale evidence, cross-tenant leakage and duplicated tool effects; ship logs, broken code, deterministic failing checks and fix verification together.
 

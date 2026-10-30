@@ -69,7 +69,7 @@ def test_submission_lifecycle_persistence_redaction_and_progress(
     assert "PRIVATE OUTPUT" not in str(result)
     assert len(client.get("/api/v1/progress").json()["solved_slugs"]) == 1
     # New application instance, same persistence layer.
-    with TestClient(create_app(Settings(), sessions)) as restarted:
+    with TestClient(create_app(Settings(), sessions), base_url="http://localhost") as restarted:
         assert len(restarted.get("/api/v1/submissions").json()["items"]) == 2
         assert (
             restarted.get(f"/api/v1/submissions/{row['id']}/results").json()["status"] == "passed"

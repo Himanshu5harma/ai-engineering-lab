@@ -1,3 +1,5 @@
+import { Alert } from "./ui/primitives";
+import { Button } from "./ui/button";
 import { AlertCircle, LoaderCircle } from "lucide-react";
 export function Loading({ text = "Loading workspace…" }: { text?: string }) {
   return (
@@ -15,17 +17,17 @@ export function ErrorBox({
   retry?: () => void;
 }) {
   return (
-    <div className="error-box" role="alert">
+    <Alert className="error-box" variant="destructive">
       <AlertCircle size={18} />
       <div>
         <strong>Something needs attention</strong>
         <p>{error.message}</p>
         {retry && (
-          <button className="button small" onClick={retry}>
+          <Button size="sm" onClick={retry}>
             Try again
-          </button>
+          </Button>
         )}
       </div>
-    </div>
+    </Alert>
   );
 }

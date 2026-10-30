@@ -1,0 +1,85 @@
+{
+  "version": 1,
+  "difficulty": "Senior / Production",
+  "timebox_minutes": 90,
+  "id": "D02",
+  "slug": "durable-document-ingestion",
+  "title": "Design a document ingestion system processing 100,000 updates/day",
+  "summary": "Design a durable ingestion pipeline that survives duplicates, out-of-order updates, poison documents and provider throttling.",
+  "tags": [
+    "Queues",
+    "Idempotency",
+    "Backpressure",
+    "Index lifecycle"
+  ],
+  "scenario": "HarborDesk synchronizes support manuals from 80 upstream connectors. Upstreams provide at-least-once webhooks, periodic inventory snapshots and deletion events. A source may resend an old revision after a new one. The previous pipeline lost deletes during retries and left duplicate chunks in search. Design a replacement that can prove the visible index corresponds to the accepted source revision, recover after a long outage and replay safely. All scale figures are exercise assumptions.",
+  "requirements": [
+    "Accept updates and deletes durably before acknowledging them; preserve source event ID, tenant, document ID and a comparable source revision.",
+    "Parse, normalize, chunk, embed and publish a complete document revision. Queries must not see a half-published mix of old and new chunks.",
+    "Handle duplicate deliveries, out-of-order events and worker crashes without duplicate visible chunks or resurrecting deleted documents.",
+    "Bound retries and quarantine permanent failures in a dead-letter workflow with enough diagnostics for safe operator replay.",
+    "Expose per-tenant lag, oldest pending event, stage latency, failure reasons, backlog and accepted-versus-indexed revision. Support controlled backfills."
+  ],
+  "scale": [
+    "100,000 document mutations/day; 85% updates and 15% deletes. Calculate average events/s and provision for a 30-times burst for 20 minutes.",
+    "Mean source payload 300 KB; p99 is 20 MB. Updates produce 50 chunks on average. Embedding endpoint quota is 1,200 chunks/s shared across tenants.",
+    "Parsing costs a mean 1.5 CPU-seconds/update. Embedding request latency averages 500 ms for a batch of 50 chunks; retry traffic consumes quota too.",
+    "Freshness objective: 95% of accepted changes searchable within 10 minutes under normal load. Recover a six-hour outage backlog within two hours while live traffic continues."
+  ],
+  "constraints": [
+    "Upstream delivery is at-least-once. A globally ordered event stream is unavailable. Exactly-once claims must identify their actual transactional boundary.",
+    "Malformed or oversized documents must not block unrelated tenants. Enforce resource limits on parsing and staging.",
+    "The queue and index cannot share one database transaction. Explain outbox, checkpoint or reconciliation choices.",
+    "Deletion tombstones must survive the longest supported replay window, assumed here to be 30 days. Explain what happens beyond it."
+  ],
+  "prompts": {
+    "diagram": "Draw event acceptance, durable queue, parsing/chunking/embedding workers, staging, publication, tombstones, dead-letter handling and reconciliation. Label durable versus ephemeral state.",
+    "flow": "Walk through update revision 12, duplicate revision 12, late revision 11 and delete revision 13. Identify idempotency keys, compare-and-set checks, acknowledgement timing and atomic visibility.",
+    "capacity": "Calculate average and burst rates, embedding demand and CPU workers. Size six-hour backlog recovery alongside live traffic and compare it to quota. Include storage, headroom and a backpressure policy.",
+    "failures": "Describe a worker crash before and after index publication, repeated embedding 429s, a poison PDF and a delayed delete. Give recovery, diagnostics, bounded retries and an invariant to test for each.",
+    "adr": "Choose queue partitioning and publication strategy. Compare in-place writes with staged revision swaps or an equivalent design. Defend ordering, replay cost, dead-letter policy and the reconciliation schedule."
+  },
+  "rubric": [
+    {
+      "id": "durability",
+      "title": "Acceptance and durability",
+      "question": "Can every acknowledged mutation be recovered?",
+      "evidence": "Name the durable acceptance boundary, ownership transfer and queue acknowledgement points."
+    },
+    {
+      "id": "ordering",
+      "title": "Idempotency and revisions",
+      "question": "Can retries or old events resurrect stale content?",
+      "evidence": "Trace event identity, document revision compare-and-set, tombstones and replay-window limits."
+    },
+    {
+      "id": "publication",
+      "title": "Atomic search visibility",
+      "question": "Can queries observe half of a document revision?",
+      "evidence": "Show staging, publication pointer and safe garbage collection of old chunks."
+    },
+    {
+      "id": "capacity",
+      "title": "Quota-aware recovery",
+      "question": "Will your outage-recovery plan fit available throughput?",
+      "evidence": "Compute update chunk demand, CPU budget and backlog drain while live traffic continues."
+    },
+    {
+      "id": "operations",
+      "title": "Recoverable failures",
+      "question": "Can an operator safely replay a dead-letter item?",
+      "evidence": "Document classification, retry bounds, replay validation, tenant fairness and lag alerts."
+    },
+    {
+      "id": "decisions",
+      "title": "Consistency trade-offs",
+      "question": "What guarantee holds across queue and index?",
+      "evidence": "State transaction boundaries and defend reconciliation against a concrete failure sequence."
+    }
+  ],
+  "follow_ups": [
+    "A connector has no monotonic source revision. What weaker guarantee can you support?",
+    "The embedding quota is halved for two hours. Which work is deferred and why?",
+    "A parser fix requires reprocessing all documents without replacing newer source edits. Design the backfill."
+  ]
+}

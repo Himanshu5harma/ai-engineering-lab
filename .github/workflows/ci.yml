@@ -31,13 +31,21 @@ jobs:
       - run: make test check
       - run: make integration
       - run: cd apps/web && npx playwright install --with-deps chromium
-      - name: Start local services
+      - name: Start isolated verification services
         run: |
-          .venv/bin/uvicorn ael_api.main:create_app --factory --host 127.0.0.1 --port 8000 > /tmp/ael-api.log 2>&1 &
+          .venv/bin/python scripts/e2e_database.py
+          source .cache/e2e.env
+          .venv/bin/python scripts/seed_browser_history.py
+          .venv/bin/uvicorn ael_api.main:create_app --factory --host 127.0.0.1 --port 8001 > /tmp/ael-api.log 2>&1 &
           .venv/bin/python -m ael_worker > /tmp/ael-worker.log 2>&1 &
-          npm --prefix apps/web run dev > /tmp/ael-web.log 2>&1 &
+          npm --prefix apps/web run dev -- --port 5175 > /tmp/ael-web.log 2>&1 &
           .venv/bin/python scripts/wait_ready.py
-      - run: make e2e
+      - name: Browser regressions and responsive design
+        run: |
+          source .cache/e2e.env
+          make e2e
+      - name: Actual Nginx Host and Origin boundary
+        run: .venv/bin/python scripts/check_proxy.py --browser
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
@@ -45,4 +53,5 @@ jobs:
           path: |
             apps/web/test-results
             apps/web/playwright-report
+            output/playwright/refinement
             /tmp/ael-*.log

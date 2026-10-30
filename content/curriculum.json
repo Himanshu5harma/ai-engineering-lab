@@ -477,17 +477,20 @@
         {
           "id": "D01",
           "title": "Design enterprise RAG for one million documents",
-          "focus": "Indexing, retrieval, scaling, authorization"
+          "focus": "Indexing, retrieval, scaling, authorization",
+          "slug": "enterprise-rag-platform"
         },
         {
           "id": "D02",
           "title": "Design ingestion for 100000 document updates per day",
-          "focus": "Queues, parallelism, failure handling"
+          "focus": "Queues, parallelism, failure handling",
+          "slug": "durable-document-ingestion"
         },
         {
           "id": "D03",
           "title": "Design a version-aware support AI assistant",
-          "focus": "Metadata, authority, citations, freshness"
+          "focus": "Metadata, authority, citations, freshness",
+          "slug": "version-aware-support-assistant"
         },
         {
           "id": "D04",

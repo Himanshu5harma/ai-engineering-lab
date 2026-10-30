@@ -6,7 +6,7 @@ def test_curriculum_counts_order_and_available_content(client, bundles):
     plan = client.get("/api/v1/curriculum").json()
     assert plan["total_planned"] == 88
     assert [m["target_count"] for m in plan["modules"]] == [64, 10, 6, 8]
-    assert [m["available_count"] for m in plan["modules"]] == [12, 0, 0, 0]
+    assert [m["available_count"] for m in plan["modules"]] == [12, 3, 0, 0]
     expected = ["R01", "R02", "R04", "R05", "R08", "R09", "G03", "E01", "E02", "G06", "P03", "A02"]
     assert plan["first_release"] == expected
     assert [b.curriculum_id for b in bundles.values()] == expected

@@ -58,7 +58,7 @@ else:
     command.upgrade(Config(str(ROOT / "alembic.ini")), "head")
     variables = {
         "AEL_DATABASE_URL": url,
-        "AEL_ALLOWED_ORIGINS": '["http://127.0.0.1:5175"]',
+        "AEL_ALLOWED_ORIGINS": '["http://127.0.0.1:5175","http://localhost:5175","http://127.0.0.1:8081","http://localhost:8081"]',
         "AEL_API_TARGET": "http://127.0.0.1:8001",
         "AEL_WEB_URL": "http://127.0.0.1:5175",
     }

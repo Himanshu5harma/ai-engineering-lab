@@ -230,8 +230,8 @@ test("first-twelve order, planned curriculum and independent engineering review"
     "A02",
   ]);
   await page.getByRole("link", { name: "Curriculum", exact: true }).click();
-  await expect(page.getByText(/12 ready now.*88 planned/)).toBeVisible();
-  await expect(page.locator("#system_design .entry-planned")).toHaveCount(10);
+  await expect(page.getByText(/15 ready now.*88 planned/)).toBeVisible();
+  await expect(page.locator("#system_design .entry-planned")).toHaveCount(7);
   await expect(page.locator("#labs .entry-planned")).toHaveCount(6);
   await expect(page.locator("#debugging .entry-planned")).toHaveCount(8);
   const reviewURL = "/api/v1/challenges/version-aware-evidence-filter/review";
@@ -266,8 +266,10 @@ test("first-twelve order, planned curriculum and independent engineering review"
       fullPage: true,
     });
   } finally {
+    const latest = await (await page.request.get(reviewURL)).json();
     const response = await page.request.post(reviewURL, {
       data: {
+        revision: latest.revision,
         version_id: previous.version_id,
         completed_tasks: previous.completed_tasks,
         notes: previous.notes,
