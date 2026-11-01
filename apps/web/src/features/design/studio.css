@@ -24,7 +24,7 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   font-size: 11px;
   margin: 0 0 8px;
 }
@@ -50,7 +50,7 @@
 }
 .design-save-actions > span {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   max-width: 140px;
   line-height: 1.5;
 }
@@ -97,10 +97,10 @@
 .design-brief-tabs,
 .design-deliverable-tabs {
   min-height: 42px;
-  padding: 0 8px;
+  padding: 4px 6px;
 }
 .design-brief-tabs .ui-tabs-trigger {
-  padding: 10px 7px;
+  padding: 6px 7px;
   font-size: 11px;
   text-transform: capitalize;
 }
@@ -111,7 +111,7 @@
 .design-brief-content {
   padding: 20px;
   font-size: 12px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   line-height: 1.8;
 }
 .design-brief-content h3 {
@@ -141,7 +141,7 @@
 }
 .design-prompt p {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   line-height: 1.6;
   margin: 0;
   max-height: 54px;
@@ -165,7 +165,7 @@
   display: flex;
   align-items: center;
   font-size: 10px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   white-space: nowrap;
   margin-right: 4px;
 }
@@ -182,7 +182,7 @@
 }
 .component-palette button:hover {
   background: var(--accent-soft);
-  color: var(--accent);
+  color: var(--primary);
 }
 .canvas-with-inspector {
   display: grid;
@@ -203,7 +203,7 @@
   --xy-controls-button-color: var(--text);
   --xy-controls-button-background-color-hover: var(--panel-hover);
   --xy-minimap-background-color: var(--panel);
-  --xy-edge-stroke-default: var(--muted);
+  --xy-edge-stroke-default: var(--muted-foreground);
   --xy-edge-label-background-color-default: var(--panel);
   --xy-edge-label-color-default: var(--text);
 }
@@ -214,7 +214,7 @@
 .architecture-canvas .react-flow__attribution {
   font-size: 8px;
   background: var(--panel);
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 .architecture-node {
   width: 200px;
@@ -226,8 +226,8 @@
   box-shadow: 0 1px 3px #0001;
 }
 .architecture-node.node-selected {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 1px var(--accent);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 1px var(--primary);
 }
 .architecture-node > div {
   display: flex;
@@ -235,7 +235,7 @@
   gap: 6px;
   text-transform: capitalize;
   font-size: 10px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   margin-bottom: 7px;
 }
 .architecture-node strong {
@@ -252,7 +252,7 @@
   margin-top: 6px;
 }
 .architecture-node .react-flow__handle {
-  background: var(--accent);
+  background: var(--primary);
   width: 7px;
   height: 7px;
   border: 2px solid var(--panel);
@@ -267,7 +267,7 @@
   justify-content: center;
   text-align: center;
   padding: 24px;
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 .canvas-empty h3 {
   color: var(--text);
@@ -291,7 +291,7 @@
 }
 .component-inspector p {
   font-size: 11px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   line-height: 1.7;
 }
 .component-inspector label,
@@ -299,7 +299,7 @@
   display: block;
   font-size: 11px;
   font-weight: 500;
-  color: var(--muted);
+  color: var(--muted-foreground);
   margin: 12px 0;
   min-width: 0;
 }
@@ -347,7 +347,7 @@
   justify-content: space-between;
   gap: 8px;
   font-size: 10px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   padding: 0 12px 8px;
   flex-shrink: 0;
 }
@@ -373,7 +373,7 @@
 }
 .design-writing > span {
   font-size: 10px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   text-align: right;
 }
 .design-review {
@@ -387,7 +387,7 @@
 .design-review > p,
 .design-evidence-note {
   font-size: 12px;
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 .design-checklist {
   display: grid;
@@ -421,7 +421,7 @@
 }
 .design-rubric-item p {
   font-size: 12px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   margin: 0 0 8px;
 }
 .design-rubric-item small {
@@ -437,7 +437,7 @@
 }
 .design-follow-ups {
   padding-left: 20px;
-  color: var(--muted);
+  color: var(--muted-foreground);
   font-size: 12px;
   line-height: 1.9;
 }
@@ -453,7 +453,7 @@
   align-items: center;
   gap: 7px;
   font-size: 11px;
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 .design-workspace-footer > div {
   display: flex;
@@ -476,7 +476,7 @@
   flex-shrink: 0;
 }
 .design-provenance {
-  color: var(--muted);
+  color: var(--muted-foreground);
 }
 .design-recovery,
 .design-save-error {
@@ -550,6 +550,11 @@
   }
 }
 @media (max-width: 600px) {
+  .design-save-actions .ui-button {
+    font-size: 12px;
+    padding-inline: 10px;
+    gap: 6px;
+  }
   .design-studio {
     padding-top: 10px;
     gap: 8px;

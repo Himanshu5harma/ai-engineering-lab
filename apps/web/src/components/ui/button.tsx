@@ -1,25 +1,33 @@
-/** shadcn/ui Button pattern, adapted to this application's semantic CSS tokens. */
+/** shadcn/ui new-york Button, adapted to the Lab component API. See README.md. */
 import type { ComponentProps } from "react";
 import { Slot } from "@radix-ui/react-slot";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "../../lib/utils";
-const buttonVariants = cva("ui-button button", {
-  variants: {
-    variant: {
-      default: "ui-button-primary primary",
-      outline: "ui-button-outline",
-      secondary: "ui-button-secondary",
-      ghost: "ui-button-ghost",
-      destructive: "ui-button-destructive",
+const buttonVariants = cva(
+  "ui-button button inline-flex shrink-0 items-center justify-center gap-2 rounded-md border border-solid border-transparent text-sm font-medium whitespace-nowrap transition-[color,background-color,box-shadow] outline-none focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/30 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  {
+    variants: {
+      variant: {
+        default:
+          "primary bg-primary text-primary-foreground hover:bg-primary/90",
+        outline:
+          "border-input bg-card text-foreground shadow-xs hover:bg-accent hover:text-accent-foreground dark:bg-input/20 dark:hover:bg-input/40",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost:
+          "bg-transparent text-muted-foreground hover:bg-accent hover:text-accent-foreground",
+        destructive:
+          "bg-destructive text-white hover:bg-destructive/90 dark:bg-destructive/60",
+      },
+      size: {
+        default: "h-9 px-4 py-2",
+        sm: "small h-8 gap-1.5 px-3 text-xs",
+        icon: "icon-button size-9 p-0",
+      },
     },
-    size: {
-      default: "",
-      sm: "ui-button-sm small",
-      icon: "ui-button-icon icon-button",
-    },
+    defaultVariants: { variant: "outline", size: "default" },
   },
-  defaultVariants: { variant: "outline", size: "default" },
-});
+);
 export function Button({
   className,
   variant,
@@ -33,6 +41,8 @@ export function Button({
   return (
     <Comp
       data-slot="button"
+      data-variant={variant || "outline"}
+      data-size={size || "default"}
       type={asChild ? undefined : type}
       className={cn(buttonVariants({ variant, size }), className)}
       {...props}

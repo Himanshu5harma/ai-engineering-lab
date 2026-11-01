@@ -1,4 +1,4 @@
-/* Shared semantic design tokens. Product and editor themes share these surfaces. */
+/* shadcn/ui Neutral surfaces with the Lab's restrained blue action color. */
 :root {
   font-family:
     Inter,
@@ -7,73 +7,81 @@
     "Segoe UI",
     sans-serif;
   font-synthesis: none;
+  font-size: 16px;
   color-scheme: light;
+  color: var(--foreground);
+  background: var(--background);
+
+  --radius: 0.625rem;
+  --background: #fafafa;
+  --foreground: #18181b;
+  --card: #ffffff;
+  --card-foreground: #18181b;
+  --popover: #ffffff;
+  --popover-foreground: #18181b;
+  --primary: #2563eb;
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: #27272a;
+  --muted: #f4f4f5;
+  --muted-foreground: #6b6b74;
+  --accent: #f4f4f5;
+  --accent-foreground: #18181b;
+  --destructive: #dc2626;
+  --border: #e4e4e7;
+  --input: #d4d4d8;
+  --ring: #2563eb;
+
+  /* Product aliases; muted/accent retain their standard shadcn meanings. */
   --bg: var(--background);
   --panel: var(--card);
-  --panel-hover: var(--secondary);
+  --panel-hover: var(--accent);
   --text: var(--foreground);
-  --muted: var(--muted-foreground);
-  --dim: #6b7585;
   --line: var(--border);
-  --accent: var(--primary);
+  --dim: var(--muted-foreground);
   --accent-text: var(--primary-foreground);
-  --accent-soft: #eaf0fc;
-  --success: #247451;
-  --success-soft: #edf7f1;
-  --danger: #b43e42;
-  --danger-soft: #fff0f0;
-  --gold: #926416;
-  --warning-soft: #fff8e9;
-  --code: #f4f6f9;
-  color: var(--text);
-  background: var(--bg);
-  font-size: 14px;
+  --accent-soft: #eff6ff;
+  --success: #15803d;
+  --success-soft: #f0fdf4;
+  --danger: #b91c1c;
+  --danger-soft: #fef2f2;
+  --gold: #a16207;
+  --warning-soft: #fffbeb;
+  --code: #f4f4f5;
   --workspace-glow: transparent;
-  --panel-shadow: 0 1px 2px #18233805;
+  --panel-shadow: 0 1px 2px #00000005;
   --content-width: 1600px;
   --page-gutter: clamp(16px, 2vw, 32px);
   --section-gap: 28px;
-  --background: #f7f8fa;
-  --foreground: #242b38;
-  --card: #ffffff;
-  --muted-foreground: #626d7e;
-  --border: #e0e4eb;
-  --primary: #365fce;
-  --primary-foreground: #ffffff;
-  --secondary: #f0f2f6;
-  --ring: #365fce;
-  --radius: 8px;
 }
+.dark,
 [data-theme="dark"] {
   color-scheme: dark;
-  --bg: var(--background);
-  --panel: var(--card);
-  --panel-hover: var(--secondary);
-  --text: var(--foreground);
-  --muted: var(--muted-foreground);
-  --dim: #a0aabd;
-  --line: var(--border);
-  --accent: var(--primary);
-  --accent-text: var(--primary-foreground);
-  --accent-soft: #263653;
-  --success: #8bd0ac;
-  --success-soft: #193c2d;
-  --danger: #f2a1a5;
-  --danger-soft: #3c252a;
-  --gold: #e8c583;
-  --warning-soft: #3c3221;
-  --code: #141920;
-  color: var(--text);
-  background: var(--bg);
-  --workspace-glow: transparent;
+  --background: #09090b;
+  --foreground: #fafafa;
+  --card: #18181b;
+  --card-foreground: #fafafa;
+  --popover: #18181b;
+  --popover-foreground: #fafafa;
+  --primary: #93c5fd;
+  --primary-foreground: #172554;
+  --secondary: #27272a;
+  --secondary-foreground: #fafafa;
+  --muted: #27272a;
+  --muted-foreground: #a1a1aa;
+  --accent: #27272a;
+  --accent-foreground: #fafafa;
+  --destructive: #f87171;
+  --border: #2e2e32;
+  --input: #3f3f46;
+  --ring: #93c5fd;
+  --accent-soft: #17223b;
+  --success: #86efac;
+  --success-soft: #142b1e;
+  --danger: #fca5a5;
+  --danger-soft: #331b1d;
+  --gold: #fcd34d;
+  --warning-soft: #302713;
+  --code: #111113;
   --panel-shadow: none;
-  --background: #101318;
-  --foreground: #e5e9f0;
-  --card: #191e26;
-  --muted-foreground: #abb5c5;
-  --border: #303845;
-  --primary: #9cb8ff;
-  --primary-foreground: #14234a;
-  --secondary: #232b37;
-  --ring: #9cb8ff;
 }

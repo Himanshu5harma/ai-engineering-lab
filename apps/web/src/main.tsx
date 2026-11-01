@@ -15,9 +15,7 @@ const DesignStudio = lazy(() =>
     default: module.DesignStudio,
   })),
 );
-import "./tokens.css";
-import "./components/ui/ui.css";
-import "./styles.css";
+import "./theme.css";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: { retry: 1, staleTime: 2000, refetchOnWindowFocus: false },
@@ -34,6 +32,7 @@ function App() {
   });
   useEffect(() => {
     document.documentElement.dataset.theme = theme;
+    document.documentElement.classList.toggle("dark", theme === "dark");
     try {
       localStorage.setItem("ael-theme-minimal", theme);
     } catch {

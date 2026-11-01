@@ -155,3 +155,11 @@ Non-failing warnings remain: Starlette's httpx TestClient deprecation, Alembic's
 The user subsequently requested a fresh server. Rebuilt the API/frontend images, backed up PostgreSQL, applied additive migration **0004**, recreated the local API/frontend containers and restarted the trusted host worker. A web test fixture was made self-contained after the container build exposed its dependency on content outside the web build context; its regression test and ESLint passed, and the container production build then passed.
 
 The refreshed application on **http://127.0.0.1:8080** serves the current frontend and API contracts. Health, worker availability, localhost access and unexpected-Host rejection passed. Every checkpointed value in all **60 submissions and 506 test results** was preserved, as were all twelve grading identities. The database backup and refresh metadata are retained in ignored `.cache/` files.
+
+## shadcn/ui theme pass — 2026-10-31
+
+Adopted Tailwind v4 and adapted official shadcn new-york shared controls, with a Neutral light/dark palette and blue primary actions. See decisions/2026-10-shadcn-theme.md for source attribution, dependency pins and CSS-layer choices.
+
+Passed: 21 frontend tests; ESLint; generated API freshness; Prettier/diff checks; TypeScript/Vite and clean Docker web builds; six editor/layout browser tests against actual Nginx on 8080. A read-only browser sweep passed 64 page/theme/viewport combinations across 1366×768, 1477×871, 820×1180 and 390×844, with zero browser errors or practice API writes. The default laptop editor retains 12 code lines with output open; key execution and Studio Save/Export controls fit. Tab keyboard navigation, dialog focus trapping, Escape and focus restoration passed. Mobile Studio Save clipping found during visual review was fixed. Screenshots: output/playwright/shadcn/index.html, including final captures from the updated 8080 server.
+
+Backend tests were not rerun because this pass changes no backend, database, content/grading identity, or execution-worker code. Hosted CI was not run. Existing Vite bundle-size warnings remain. Only the local web container was refreshed; no personal data was modified.

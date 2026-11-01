@@ -83,7 +83,7 @@ There is no background lint request or Problems drawer. Deterministic Run/Submit
 
 ## Shared layout
 
-`apps/web/src/styles.css` owns consolidated shared page geometry; `tokens.css` owns theme values and `components/ui/ui.css` owns shared states: a 1600 px maximum content width, responsive 16–32 px gutters, consistent page/section headings, card spacing, and responsive grids. The coding header separates breadcrumb, identity and actions; controls share one baseline. Fullscreen intentionally uses the full viewport. The output pane has a usable default height and is constrained after viewport changes. Mobile catalog topic filters scroll within their own row instead of pushing the challenge list down.
+`apps/web/src/theme.css` is the Tailwind entry point; `tokens.css` owns shadcn Neutral theme values with blue primary actions; shared controls use Tailwind utilities, `components/ui/ui.css` retains compatibility/recovery geometry, and `styles.css` owns page layout: a 1600 px maximum content width, responsive 16–32 px gutters, consistent page/section headings, card spacing, and responsive grids. The coding header separates breadcrumb, identity and actions; controls share one baseline. Fullscreen intentionally uses the full viewport. The output pane has a usable default height and is constrained after viewport changes. Mobile catalog topic filters scroll within their own row instead of pushing the challenge list down.
 
 After rebuilding the frontend, refresh long-lived browser tabs to load the new asset bundle. Browser layout tests cover the annotated 1477×871 desktop size and 390-pixel mobile width, shared page edges, output visibility, header overlap and Design Studio button alignment.
 
