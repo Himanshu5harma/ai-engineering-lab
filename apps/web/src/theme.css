@@ -6,6 +6,7 @@
 @import "./tokens.css";
 @import "./components/ui/ui.css";
 @import "./styles.css";
+@import "./features/arena/arena.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
 

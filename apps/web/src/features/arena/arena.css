@@ -1,0 +1,542 @@
+/* The coding workspace has one layout: description, code and a resizable test panel. */
+.arena-workbench {
+  height: calc(100dvh - var(--shell-header-height, 68px));
+  min-height: 420px;
+  width: 100%;
+  max-width: var(--content-width);
+  margin: 0 auto;
+  padding: 10px 12px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.arena-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 36px;
+  flex-shrink: 0;
+}
+.arena-identity,
+.arena-heading-title,
+.workspace-view-controls,
+.execution-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+.arena-identity {
+  flex: 1;
+}
+.arena-identity > .ui-button {
+  width: 30px;
+  height: 30px;
+  flex-shrink: 0;
+}
+.arena-heading-title {
+  flex: 1;
+}
+.arena-heading h1 {
+  font-size: 15px;
+  font-weight: 550;
+  letter-spacing: -0.25px;
+  line-height: 1.4;
+  margin: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+.arena-heading-title > .challenge-id {
+  font:
+    11px ui-monospace,
+    monospace;
+  padding: 3px 5px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.arena-heading-title > .difficulty {
+  font-size: 10px;
+  flex-shrink: 0;
+}
+.workspace-view-controls {
+  flex-shrink: 0;
+  gap: 10px;
+}
+.workspace-save {
+  width: 32px;
+  height: 32px;
+}
+.workspace-save[aria-pressed="true"] {
+  color: var(--primary);
+}
+.execution-toolbar {
+  gap: 6px;
+}
+.execution-toolbar .ui-button {
+  min-width: 70px;
+}
+.mobile-workspace-switch {
+  display: none;
+}
+.arena-workbench .workspace {
+  display: grid;
+  grid-template-columns: minmax(0, var(--problem-width, 43%)) 8px minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+  min-width: 0;
+}
+.problem-panel,
+.editor-container,
+.results-panel {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.problem-panel,
+.code-panel,
+.editor-container,
+.results-panel {
+  display: flex;
+  flex-direction: column;
+}
+.code-panel {
+  min-width: 0;
+  min-height: 0;
+}
+.editor-container {
+  flex: 1;
+}
+.pane-tabs {
+  height: 40px;
+  min-height: 40px;
+  gap: 5px;
+  scrollbar-width: thin;
+}
+.pane-tabs > .ui-tabs-trigger {
+  height: 40px;
+  padding: 0 10px;
+  font-size: 12px;
+}
+.pane-tabs > .ui-tabs-trigger[data-state="active"] > svg {
+  color: var(--primary);
+}
+.problem-scroll {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  padding: 24px;
+  overscroll-behavior: contain;
+}
+.problem-scroll .markdown {
+  color: var(--foreground);
+  font-size: 13px;
+  line-height: 1.85;
+}
+.problem-scroll .markdown h1 {
+  font-size: 23px;
+  line-height: 1.35;
+  margin: 8px 0 18px;
+}
+.problem-scroll .markdown h2 {
+  font-size: 15px;
+  margin-top: 26px;
+}
+.problem-scroll .tag-row {
+  margin-bottom: 18px;
+}
+.python-editor-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+}
+.editor-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 40px;
+  min-height: 40px;
+  flex-shrink: 0;
+  gap: 8px;
+  padding: 0 12px;
+  border-bottom: 1px solid var(--border);
+  color: var(--muted-foreground);
+}
+.editor-file,
+.editor-essential-controls,
+.draft-state {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.editor-file {
+  font-size: 12px;
+  font-weight: 550;
+  color: var(--foreground);
+  white-space: nowrap;
+}
+.editor-file > svg {
+  color: var(--primary);
+}
+.language-label {
+  margin-left: 7px;
+  padding-left: 12px;
+  border-left: 1px solid var(--border);
+  color: var(--muted-foreground);
+  font-size: 11px;
+  font-weight: 400;
+}
+.editor-essential-controls {
+  gap: 8px;
+}
+.draft-state {
+  font-size: 10px;
+  color: var(--muted-foreground);
+  white-space: nowrap;
+}
+.draft-error {
+  color: var(--danger);
+}
+.editor-font-size.ui-input {
+  width: 58px;
+  height: 28px;
+  min-height: 28px;
+  padding: 3px 4px;
+  border-color: transparent;
+  box-shadow: none;
+  background: transparent;
+  font-size: 10px;
+}
+.editor-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  min-height: 28px;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  padding: 5px 6px;
+  color: var(--muted-foreground);
+  font-size: 11px;
+  white-space: nowrap;
+}
+.editor-tool:hover {
+  background: var(--accent);
+  color: var(--foreground);
+}
+.editor-reset.ui-button {
+  width: 28px;
+  height: 28px;
+  padding: 5px;
+}
+.monaco-surface {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  overflow: hidden;
+}
+.editor-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+  max-height: 60px;
+  overflow: auto;
+  padding: 6px 12px;
+  background: var(--accent-soft);
+  color: var(--primary);
+  font-size: 11px;
+}
+.editor-notice button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: inherit;
+}
+.split-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  outline-offset: -2px;
+}
+.split-handle > span {
+  background: var(--border);
+  border-radius: 3px;
+  transition: background 0.15s;
+}
+.split-handle:hover > span,
+.split-handle:focus-visible > span {
+  background: var(--primary);
+}
+.split-vertical {
+  cursor: col-resize;
+}
+.split-vertical > span {
+  height: 30px;
+  width: 3px;
+}
+.split-horizontal {
+  height: 8px;
+  min-height: 8px;
+  cursor: row-resize;
+  flex-shrink: 0;
+}
+.split-horizontal > span {
+  height: 3px;
+  width: 30px;
+}
+.results-panel {
+  flex: none;
+}
+.results-collapse {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 30px;
+  height: 28px;
+  flex-shrink: 0;
+  margin-left: auto;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--muted-foreground);
+}
+.results-collapse:hover {
+  background: var(--accent);
+}
+.results-collapse span {
+  display: none;
+}
+.results-scroll {
+  min-height: 0;
+  flex: 1;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.results-scroll[hidden] {
+  display: none;
+}
+.results-scroll .execution-results {
+  padding: 16px 18px;
+}
+.results-empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  min-height: 100%;
+  padding: 20px;
+  color: var(--muted-foreground);
+  font-size: 12px;
+}
+.results-empty > svg {
+  flex-shrink: 0;
+}
+.results-empty strong {
+  color: var(--foreground);
+  font-weight: 550;
+}
+.results-empty p {
+  margin: 6px 0 0;
+  font-size: 12px;
+}
+.testcase-view {
+  padding: 12px 18px 16px;
+}
+.case-tabs {
+  gap: 6px;
+  border: 0;
+  background: transparent;
+  padding: 0;
+  min-height: 28px;
+  scrollbar-width: thin;
+}
+.case-tabs > .ui-tabs-trigger {
+  height: 28px;
+  padding: 4px 10px;
+  font-size: 11px;
+}
+.case-tabs > .ui-tabs-trigger[data-state="active"] {
+  background: var(--secondary);
+  border-color: transparent;
+  box-shadow: none;
+}
+.case-content {
+  padding-top: 12px;
+}
+.case-name {
+  margin: 0 0 10px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.case-inputs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+.case-input > span {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted-foreground);
+  font:
+    11px ui-monospace,
+    monospace;
+}
+.case-input pre {
+  margin: 0;
+  padding: 8px 10px;
+  border-radius: 6px;
+  background: var(--secondary);
+  color: var(--foreground);
+  font:
+    12px/1.5 ui-monospace,
+    monospace;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 120px;
+  overflow: auto;
+}
+.case-expected {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 12px;
+  font-size: 11px;
+  color: var(--muted-foreground);
+}
+.case-expected code {
+  color: var(--foreground);
+  font-size: 11px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.unavailable-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  color: var(--gold);
+  background: var(--warning-soft);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  flex-shrink: 0;
+}
+.unavailable-banner > svg {
+  flex-shrink: 0;
+}
+@media (max-width: 1100px) {
+  .arena-heading-title > .difficulty {
+    display: none;
+  }
+  .pane-tabs {
+    gap: 0;
+    padding-inline: 5px;
+  }
+  .pane-tabs > .ui-tabs-trigger {
+    padding-inline: 8px;
+    font-size: 11px;
+  }
+  .problem-scroll {
+    padding: 20px;
+  }
+}
+@media (max-width: 849px) {
+  .arena-workbench {
+    padding: 8px 10px 10px;
+    min-height: 440px;
+  }
+  .arena-heading {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 8px;
+  }
+  .arena-identity {
+    grid-column: 1 / -1;
+  }
+  .arena-heading h1 {
+    font-size: 14px;
+  }
+  .mobile-workspace-switch {
+    display: flex;
+    align-items: center;
+    background: var(--secondary);
+    border-radius: 6px;
+    padding: 2px;
+    width: fit-content;
+  }
+  .mobile-workspace-switch .ui-button {
+    padding: 5px 8px;
+    height: 28px;
+    font-size: 11px;
+  }
+  .workspace-view-controls {
+    gap: 5px;
+    justify-content: flex-end;
+  }
+  .workspace-save {
+    width: 28px;
+    height: 28px;
+  }
+  .execution-toolbar .ui-button {
+    min-width: 0;
+    height: 32px;
+    padding: 5px 9px;
+    font-size: 11px;
+  }
+  .arena-workbench .workspace {
+    display: flex;
+    flex-direction: column;
+  }
+  .workspace > .split-vertical {
+    display: none;
+  }
+  .workspace[data-mobile-pane="code"] .problem-panel,
+  .workspace[data-mobile-pane="problem"] .code-panel {
+    display: none;
+  }
+  .problem-panel,
+  .code-panel {
+    flex: 1;
+    min-height: 0;
+  }
+  .editor-toolbar {
+    padding-inline: 8px;
+  }
+  .editor-essential-controls {
+    gap: 4px;
+  }
+  .language-label {
+    margin-left: 3px;
+    padding-left: 7px;
+    font-size: 10px;
+  }
+  .draft-state {
+    font-size: 9px;
+  }
+  .editor-font-size.ui-input {
+    width: 52px;
+  }
+  .editor-tool {
+    font-size: 10px;
+    padding-inline: 4px;
+  }
+  .pane-tabs > .ui-tabs-trigger {
+    font-size: 11px;
+    padding-inline: 8px;
+  }
+  .testcase-view {
+    padding: 10px 12px;
+  }
+}
