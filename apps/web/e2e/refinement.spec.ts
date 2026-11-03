@@ -39,7 +39,7 @@ for (const [name, width, height] of [["laptop",1366,768],["desktop",1477,871],["
             await page.getByRole("tab", {name:"Notes",exact:true}).focus();
             await page.keyboard.press("ArrowRight");
             await expect(page.getByRole("tab",{name:"Review",exact:true})).toBeFocused();
-            await page.getByRole("tab",{name:"Problem",exact:true}).click();
+            await page.getByRole("tab",{name:"Description",exact:true}).click();
           }
         }
         if (label === "studio") {

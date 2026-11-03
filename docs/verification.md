@@ -163,3 +163,49 @@ Adopted Tailwind v4 and adapted official shadcn new-york shared controls, with a
 Passed: 21 frontend tests; ESLint; generated API freshness; Prettier/diff checks; TypeScript/Vite and clean Docker web builds; six editor/layout browser tests against actual Nginx on 8080. A read-only browser sweep passed 64 page/theme/viewport combinations across 1366×768, 1477×871, 820×1180 and 390×844, with zero browser errors or practice API writes. The default laptop editor retains 12 code lines with output open; key execution and Studio Save/Export controls fit. Tab keyboard navigation, dialog focus trapping, Escape and focus restoration passed. Mobile Studio Save clipping found during visual review was fixed. Screenshots: output/playwright/shadcn/index.html, including final captures from the updated 8080 server.
 
 Backend tests were not rerun because this pass changes no backend, database, content/grading identity, or execution-worker code. Hosted CI was not run. Existing Vite bundle-size warnings remain. Only the local web container was refreshed; no personal data was modified.
+
+## Editor investigation and feature verification — 2026-11-01
+
+Reproduced and fixed three editor defects:
+
+- Cmd/Ctrl+Enter and Cmd/Ctrl+Shift+Enter queued execution but also reached Monaco's insert-line commands, adding blank lines to the draft. The workspace now consumes its execution shortcuts before Monaco handles them. A real-browser regression first reproduced the extra newline and now verifies that both shortcuts preserve the exact source, show results, and restore saved code safely.
+- Replace All's keyboard shortcut was captured as Run, including Cmd+Enter inside Find/Replace. Execution shortcuts now leave dialog keyboard actions alone and ignore Alt-modified combinations. Mac and Windows keybinding profiles verify replacement and zero unintended submission requests.
+- The minimal Monaco imports omitted its Codicon font stylesheet. Find/Replace and other editor icons rendered as missing glyphs. The font and modifiers are now bundled locally; browser checks require an actual loaded font face, and the built app serves the 80,340-byte font successfully.
+
+| Verification | Result |
+| --- | --- |
+| Full Python/content/PostgreSQL/restricted-Docker suite | **280 passed, 8 skipped**; the eight proxy checks ran separately below. Temporary PostgreSQL schemas/databases were used. |
+| Frontend component tests | **21 passed**. |
+| Full isolated browser feature suite | **46 passed** for the shortcut fixes. Covers all twelve coding lifecycles, three design workflows, drafts/recovery/conflicts, previous-version export, reviews, navigation/search/bookmarks/notes, history/export/progress/curriculum, keyboard controls and the eight light/dark viewport combinations. |
+| Final editor/layout flows after the icon-font fix | **11 passed** on the test frontend and **11 passed** through the actual Nginx config and built assets on 8081. Includes typing/indentation, keyboard and mouse insertion at 12/15/24 px, protected Reset, exact-source execution shortcuts, private-result redaction, restoration, Mac/Windows Find/Replace, real icon-font loading, formatter undo/stale-edit protection, resizing/fullscreen, persistence and responsive layouts. |
+| Actual Nginx Host/Origin regressions | **8 passed**. |
+| In-app Mac browser smoke checks | Native typing, Undo, formatting, protected Reset and Run/Submit shortcuts checked on an isolated origin/database. Both execution shortcuts preserved the editor's source. |
+| Additional editor checks | Comment/uncomment, indent/unindent, Replace All button, three progressive hints and six public-input disclosures passed. |
+| Static/build checks | Ruff lint/format, strict mypy, ESLint, generated API freshness, TypeScript/Vite, new browser-test formatting, whitespace and Docker web build passed. |
+
+The mouse-placement test now measures live text nodes atomically and uses a locator click that waits for stable layout. An initial version could retain a detached Monaco line after a font change and incorrectly click coordinates 0,0; this was test synchronization, rather than an application editing defect. The functional insertion check passed three consecutive focused runs and the final built-app suite.
+
+All personal-record fingerprints matched: **60 submissions, 506 test results, zero database review/design rows, and all 14 stored content-version rows**. Personal browser tabs/drafts were not edited. Only the local web container was refreshed; API, database and personal worker stayed running. The final health check reported the worker ready and the bundled icon-font URL returned HTTP 200. Temporary test services/database were removed afterward.
+
+Screenshots: `output/playwright/editor-fix/verified-editor.png` shows the corrected editor controls on isolated test data; current layout captures are under `output/playwright/refinement/`. Hosted CI and complete Firefox/Safari suites were not run. Existing non-failing Starlette/Alembic deprecation and Vite bundle-size warnings remain.
+
+## LeetCode-inspired coding workspace — 2026-11-01
+
+Replaced the focus/fullscreen workflow with a permanent split workspace: Description/Hints/Notes/Review on the left, code on the right, and a resizable Test cases/Test results/History panel below code. The compact header aligns challenge identity, bookmark, Run and Submit. The Code/Python row retains only draft status, font size, Format and protected Reset. Public fixtures now have individual case tabs with arguments and expected values/exceptions; case selection survives switching to results and back. Run/Submit and history selection expand results automatically. Mobile uses Description/Code views.
+
+Removed the old fullscreen effects and overlapping editor CSS rather than layering new geometry on them. `features/arena/arena.css` owns the workspace layout, and shared shadcn/Radix tabs support a line variant. Source-draft/notes/preference keys, formatter undo/stale-edit guards, API contracts, content/grading identities and the sandbox remain unchanged. The prior shortcut and Codicon fixes remain covered.
+
+| Verification | Actual result |
+| --- | --- |
+| Frontend component tests | **22 passed**, including public case display, collapse/reopen and case-selection retention. |
+| Full isolated browser suite | **46 passed** on a fresh temporary PostgreSQL database. Includes twelve challenge lifecycles, editor typing/selection, shortcuts, formatting/Undo, Reset/restoration, saved drafts, reviews/design recovery and responsive site flows. |
+| Built application through actual Nginx | **11 browser flows passed** against production assets and the isolated API. |
+| Actual proxy security regressions | **8 passed** for Host/Origin handling. |
+| Static/build checks | ESLint, generated API freshness, TypeScript/Vite, touched frontend Prettier checks, whitespace and Docker web build passed. |
+| Visual and keyboard usability | Light/dark checks passed at **1366×768, 1477×871, 820×1180 and 390×844**. Default laptop code space is **13 lines** with test cases open. Run/Submit/Format/Reset fit; panel resizing, tab arrows, mobile Description/Code, output collapse and public-case selection work. |
+
+The local web service was refreshed on **http://127.0.0.1:8080** without restarting the personal API, database or execution worker. Current assets and the bundled icon font return HTTP 200; health reports the isolated Python worker ready. Final screenshots are in `output/playwright/leetcode/`, including `laptop-light.png`, `laptop-dark.png` and mobile Description/Code views.
+
+The final built app passed the same eight theme/viewport checks. All personal-table fingerprints matched: **60 submissions, 506 test results, zero review/design rows and 14 stored content-version rows**. Personal browser tabs and drafts were not edited. Temporary test API/Vite/worker processes and the helper-created database were removed after verification.
+
+This is a frontend layout change. The complete backend suite was not rerun; the actual-proxy security suite was. Hosted CI and full Firefox/Safari suites were not run. The existing non-failing large lazy-editor bundle warning remains. Public case inputs are read-only; custom case execution is not introduced.

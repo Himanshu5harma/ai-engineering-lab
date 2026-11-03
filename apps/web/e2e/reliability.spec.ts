@@ -20,7 +20,7 @@ test("review drafts survive tab changes and navigation, and failed saves retain 
   await page.goto("/arena/top-k-vector-search"); await page.getByRole("tab",{name:"Review",exact:true}).click();
   const field=page.getByRole("textbox",{name:"Reasoning, evidence, and remaining questions"}); const text=unique("Unsaved evidence");
   await field.fill(text); const checkbox=page.getByRole("checkbox").first(); const checked=!(await checkbox.isChecked()); await checkbox.setChecked(checked);
-  await page.getByRole("tab",{name:"Problem",exact:true}).click(); await page.getByRole("tab",{name:"Review",exact:true}).click();
+  await page.getByRole("tab",{name:"Description",exact:true}).click(); await page.getByRole("tab",{name:"Review",exact:true}).click();
   await expect(field).toHaveValue(text); expect(await checkbox.isChecked()).toBe(checked);
   await page.getByRole("link",{name:"All challenges",exact:true}).click(); await page.getByRole("link",{name:/Top-K vector search/}).first().click();
   await page.getByRole("tab",{name:"Review",exact:true}).click(); await expect(field).toHaveValue(text);

@@ -92,7 +92,7 @@ test("minimal toolbar formats locally and keeps undo, find and syntax failures s
   expect(errors).toEqual([]);
 });
 
-test("fullscreen, editor focus and accessible panel resizing create more code space", async ({
+test("permanent split workspace resizes without focus or fullscreen modes", async ({
   page,
 }) => {
   await page.setViewportSize({ width: 1440, height: 960 });
@@ -100,6 +100,12 @@ test("fullscreen, editor focus and accessible panel resizing create more code sp
   await expect(
     page.getByRole("textbox", { name: "Python solution editor", exact: true }),
   ).toBeVisible();
+  await expect(
+    page.getByRole("button", { name: "Focus editor", exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByRole("button", { name: /fullscreen workspace/i }),
+  ).toHaveCount(0);
   const initial = await page.locator(".editor-container").boundingBox();
   expect(initial!.height).toBeGreaterThan(350);
   const vertical = page.getByRole("separator", {
@@ -107,7 +113,7 @@ test("fullscreen, editor focus and accessible panel resizing create more code sp
   });
   await vertical.focus();
   await page.keyboard.press("ArrowLeft");
-  await expect(vertical).toHaveAttribute("aria-valuenow", "32");
+  await expect(vertical).toHaveAttribute("aria-valuenow", "41");
   const wider = await page.locator(".editor-container").boundingBox();
   expect(wider!.width).toBeGreaterThan(initial!.width);
   await expect(page.locator(".results-scroll")).toBeVisible();
@@ -118,26 +124,23 @@ test("fullscreen, editor focus and accessible panel resizing create more code sp
   await horizontal.focus();
   await page.keyboard.press("ArrowUp");
   await expect(horizontal).toHaveAttribute("aria-valuenow", String(size + 20));
+  const beforeCollapse = await page.locator(".editor-container").boundingBox();
   await page
     .getByRole("button", { name: "Collapse test results", exact: true })
     .click();
-  await page.getByRole("button", { name: "Focus editor", exact: true }).click();
-  await expect(page.locator(".problem-panel")).not.toBeVisible();
-  await page
-    .getByRole("button", { name: "Enter fullscreen workspace", exact: true })
-    .click();
-  await expect(page.locator(".arena-page")).toHaveClass(/arena-expanded/);
-  const full = await page.locator(".arena-page").boundingBox();
-  expect(full!.height).toBe(960);
-  expect(full!.width).toBe(1440);
+  await expect(page.locator(".results-scroll")).not.toBeVisible();
+  expect(
+    (await page.locator(".editor-container").boundingBox())!.height,
+  ).toBeGreaterThan(beforeCollapse!.height);
+  await expect(page.locator(".problem-panel")).toBeVisible();
+  await page.getByRole("tab", { name: "Test cases", exact: true }).click();
+  await expect(
+    page.getByRole("tab", { name: "Case 1", exact: true }),
+  ).toBeVisible();
   await page.screenshot({
-    path: "test-results/editor-fullscreen.png",
+    path: "test-results/editor-split-workspace.png",
     fullPage: true,
   });
-  await page.keyboard.press("Escape");
-  await expect(page.locator(".arena-page")).not.toHaveClass(/arena-expanded/);
-  await page.getByRole("button", { name: "Show problem", exact: true }).click();
-  await expect(page.locator(".problem-panel")).toBeVisible();
 });
 
 test("font size survives reload, theme follows the app, and mobile stays focused", async ({
@@ -193,7 +196,7 @@ test("font size survives reload, theme follows the app, and mobile stays focused
   await expect(
     page.getByRole("textbox", { name: "Python solution editor", exact: true }),
   ).toBeVisible();
-  await page.getByRole("button", { name: "Problem", exact: true }).click();
+  await page.getByRole("button", { name: "Description", exact: true }).click();
   await expect(page.locator(".problem-panel")).toBeVisible();
   await expect(page.locator(".code-panel")).not.toBeVisible();
   await page.getByRole("button", { name: "Code", exact: true }).click();

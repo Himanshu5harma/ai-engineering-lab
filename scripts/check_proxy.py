@@ -79,6 +79,7 @@ with TemporaryDirectory(prefix="ael-proxy-") as folder:
                     "run",
                     "test:e2e",
                     "--",
+                    "e2e/editor-input.spec.ts",
                     "e2e/editor.spec.ts",
                     "e2e/layout.spec.ts",
                     "--output=" + str(ROOT / ".cache/proxy-browser-results"),

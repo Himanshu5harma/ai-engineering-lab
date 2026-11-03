@@ -15,11 +15,13 @@ test("annotated challenge header aligns and output remains visible within the vi
   expect(resultBounds!.y + resultBounds!.height).toBeLessThanOrEqual(871);
   const title = await page.locator(".arena-heading-title").boundingBox();
   const actions = await page.locator(".workspace-view-controls").boundingBox();
-  const problem = await page.locator(".problem-panel").boundingBox();
-  expect(Math.abs(title!.x - problem!.x)).toBeLessThan(2);
+  const problem = await page.locator(".arena-heading").boundingBox();
+  expect(
+    Math.abs((await page.locator(".workspace").boundingBox())!.x - problem!.x),
+  ).toBeLessThan(2);
   expect(title!.x + title!.width).toBeLessThan(actions!.x);
   const centers = await page
-    .locator(".workspace-view-controls > button")
+    .locator(".execution-toolbar > button")
     .evaluateAll((buttons) =>
       buttons.map((button) => {
         const box = button.getBoundingClientRect();
