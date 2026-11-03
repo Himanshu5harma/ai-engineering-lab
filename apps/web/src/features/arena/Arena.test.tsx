@@ -84,15 +84,15 @@ beforeEach(() => {
   });
 });
 describe("Coding Arena", () => {
-  it("shows execution output by default and lets the learner hide and reopen it", async () => {
+  it("shows public test cases by default and lets the learner hide and reopen them", async () => {
     mount();
-    const empty = await screen.findByText("No test results yet");
+    const empty = await screen.findByText("Sample");
     expect(empty).toBeVisible();
     await userEvent.click(
       screen.getByRole("button", { name: "Collapse test results" }),
     );
     expect(empty).not.toBeVisible();
-    await userEvent.click(screen.getByRole("tab", { name: "Test results" }));
+    await userEvent.click(screen.getByRole("tab", { name: "Test cases" }));
     expect(empty).toBeVisible();
   });
   it("loads editable starter code and saves a draft", async () => {
@@ -107,6 +107,27 @@ describe("Coding Arena", () => {
         "return 1",
       ),
     );
+  });
+  it("keeps the selected public case when switching between cases and results", async () => {
+    vi.mocked(api.challenge).mockResolvedValue({
+      ...challenge,
+      public_count: 2,
+      public_cases: [
+        ...challenge.public_cases,
+        { name: "Rejected input", kwargs: { a: [] }, raises: "ValueError" },
+      ],
+    });
+    mount();
+    await userEvent.click(await screen.findByRole("tab", { name: "Case 2" }));
+    expect(screen.getByText("raises ValueError")).toBeVisible();
+    await userEvent.click(screen.getByRole("tab", { name: "Test results" }));
+    expect(screen.getByText("No test results yet")).toBeVisible();
+    await userEvent.click(screen.getByRole("tab", { name: "Test cases" }));
+    expect(screen.getByRole("tab", { name: "Case 2" })).toHaveAttribute(
+      "aria-selected",
+      "true",
+    );
+    expect(screen.getByText("raises ValueError")).toBeVisible();
   });
   it("keeps execution unavailable explicit", async () => {
     vi.mocked(api.availability).mockResolvedValue({

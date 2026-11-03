@@ -3,6 +3,7 @@ import { IconButton } from "../../components/ui/button";
 import Editor, { loader } from "@monaco-editor/react";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import EditorWorker from "monaco-editor/esm/vs/editor/editor.worker?worker";
+import "monaco-editor/esm/vs/base/browser/ui/codicons/codiconStyles";
 import "monaco-editor/esm/vs/basic-languages/python/python.contribution";
 import "monaco-editor/esm/vs/editor/contrib/find/browser/findController";
 import "monaco-editor/esm/vs/editor/contrib/format/browser/formatActions";
@@ -179,7 +180,7 @@ export function PythonEditor({
       >
         <span className="editor-file">
           <FileCode2 size={14} />
-          solution.py
+          Code <span className="language-label">Python 3.12</span>
         </span>
         <div className="editor-essential-controls">
           <span
